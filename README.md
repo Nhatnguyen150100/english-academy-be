@@ -1,4 +1,4 @@
-# E-Commerce Application
+# English Academy Application
 
 Đây là một ứng dụng e-commerce được xây dựng bằng Node.js, Express.js và MongoDB. Ứng dụng này cho phép người dùng duyệt sản phẩm, thêm vào giỏ hàng và thực hiện thanh toán.
 
