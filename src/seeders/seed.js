@@ -2,11 +2,12 @@ const logger = require("../config/winston");
 const seedUsers = require("./user_seeders");
 
 const runSeeders = async () => {
+  logger.info("Seeders started");
   await seedUsers();
-  logger.info("Thêm dữ liệu thành công!");
+  logger.info("Seeders succeeded");
 };
 
 runSeeders().catch((error) => {
-  logger.error("Lỗi khi chạy seeder:", error);
+  logger.error("Seeders failed:", error);
   process.exit(1);
 });
