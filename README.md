@@ -14,7 +14,7 @@
 
 ## Giới thiệu
 
-Ứng dụng e-commerce này cung cấp một nền tảng cho người dùng để mua sắm trực tuyến. Với việc sử dụng MongoDB làm cơ sở dữ liệu, ứng dụng hỗ trợ lưu trữ và quản lý thông tin sản phẩm, người dùng và đơn hàng.
+Ứng dụng English Academy này cung cấp một nền tảng cho người dùng học tiếng anh. Với việc sử dụng MongoDB làm cơ sở dữ liệu, ứng dụng hỗ trợ lưu trữ và quản lý thông tin người dùng và bài học.
 
 ## Yêu cầu
 
