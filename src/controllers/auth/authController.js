@@ -15,7 +15,7 @@ const authController = {
       res.status(rs.status).json({
         message: rs.message,
         data: { user: rs.data, accessToken: accessToken },
-        status: rs.status
+        status: rs.status,
       });
     } catch (error) {
       logger.error(error.message);
@@ -26,6 +26,19 @@ const authController = {
     try {
       const { email, password } = req.body;
       const rs = await authService.register(email, password);
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status).json(error);
+    }
+  },
+  me: async (req, res) => {
+    try {
+      const user = req.user;
+      if (!user) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      const rs = await authService.me(user.email);
       res.status(rs.status).json(rs);
     } catch (error) {
       logger.error(error.message);

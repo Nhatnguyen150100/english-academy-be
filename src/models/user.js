@@ -25,6 +25,16 @@ const userSchema = new Schema(
     phone_number: {
       type: String,
     },
+    score: {
+      type: Number,
+      default: 0,
+      required: true,
+    },
+    accountType: {
+      type: String,
+      enum: ["FREE", "PREMIUM"],
+      default: "FREE",
+    },
     address: {
       type: String,
     },
