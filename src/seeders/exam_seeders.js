@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
-const { deleteMany, insertMany } = require("../models/exam");
+const { deleteMany, insertMany, Exam } = require("../models/exam");
 const dotenv = require("dotenv");
 const logger = require("../config/winston");
+const { Course } = require("../models/courses");
 dotenv.config();
 
 const { connect, connection } = mongoose;
@@ -19,7 +20,7 @@ const connectDB = async () => {
   }
 };
 
-const exams = [
+const exams = (courseId) => ([
   {
     name: "English Exam 1",
     description: "Complete the sentences with the correct words.",
@@ -73,6 +74,7 @@ const exams = [
         correctAnswer: "want",
       },
     ],
+    courseId,
   },
   {
     name: "English Exam 2",
@@ -123,15 +125,24 @@ const exams = [
         correctAnswer: "read",
       },
     ],
+    courseId,
   },
-];
+]);
 
 const seedExams = async () => {
   await connectDB();
 
   await deleteMany();
 
-  await insertMany(exams);
+  const courses = await Course.find();
+
+  await insertMany(exams(courses[0]._id));
+
+  const examsData = await Exam.find();
+
+  await Course.findByIdAndUpdate(courses[0]._id, ({...courses[0].toObject(), exams: examsData.map((item) => item._id)}), {
+    new: true,
+  });
 
   connection.close();
 };

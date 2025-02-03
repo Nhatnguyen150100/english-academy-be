@@ -11,6 +11,15 @@ const examService = {
     try {
       const exam = new Exam(examData);
       const savedExam = await exam.save();
+
+      if (examData.courseId) {
+        await Course.findByIdAndUpdate(
+          examData.courseId,
+          { $addToSet: { exams: savedExam._id } },
+          { new: true },
+        );
+      }
+
       return new BaseSuccessResponse({
         data: savedExam,
         message: "Exam created successfully",
@@ -29,6 +38,8 @@ const examService = {
         ? { name: { $regex: searchTerm, $options: "i" } }
         : {};
       const exams = await Exam.find(query)
+        .select("-questions")
+        .populate("courseId")
         .skip((page - 1) * limit)
         .limit(limit);
 
@@ -59,8 +70,16 @@ const examService = {
           message: "Exam not found",
         });
       }
+      const examObject = exam.toObject();
+
+      if (examObject.questions) {
+        examObject.questions.forEach((question) => {
+          delete question.correctAnswer;
+        });
+      }
+
       return new BaseSuccessResponse({
-        data: exam,
+        data: examObject,
         message: "Fetched exam successfully",
       });
     } catch (error) {

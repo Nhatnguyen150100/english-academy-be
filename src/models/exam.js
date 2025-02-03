@@ -26,6 +26,11 @@ const questionSchema = new Schema({
 
 const examSchema = new Schema(
   {
+    courseId: {
+      type: Schema.Types.ObjectId,
+      ref: "Course",
+      required: true,
+    },
     name: {
       type: String,
       required: true,

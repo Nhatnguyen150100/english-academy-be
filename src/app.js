@@ -13,6 +13,7 @@ dotenv.config();
 import authRouter from "./routes/authRouter";
 import connectDB from "./config/database";
 import morgan from "morgan";
+import setUpRouters from "./routes/index.js";
 
 const logger = require("./config/winston.js");
 
@@ -60,7 +61,7 @@ app.use((req, res, next) => {
 /**
  * @toto router setup
  */
-app.use("/v1/auth", authRouter);
+setUpRouters(app);
 
 app.listen(process.env.PORT || 3000, () => {
   logger.info("Server listening on port: " + (process.env.PORT || 3000));
