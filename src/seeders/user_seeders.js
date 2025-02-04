@@ -26,6 +26,25 @@ const users = [
     role: "USER",
     password: "$2b$10$6eXQVPv8SBbKvivehAXVWe/lotzezRfMWZ3oc82vfxHUYZnKp0gVG", // plain = password
     phone_number: "0123456789",
+    score: 5,
+    address: "Hanoi",
+  },
+  {
+    email: "user2@gmail.com",
+    name: "Nguyen Van B",
+    role: "USER",
+    password: "$2b$10$6eXQVPv8SBbKvivehAXVWe/lotzezRfMWZ3oc82vfxHUYZnKp0gVG", // plain = password
+    phone_number: "0123456789",
+    score: 15,
+    address: "Hanoi",
+  },
+  {
+    email: "user3@gmail.com",
+    name: "Nguyen Van C",
+    role: "USER",
+    password: "$2b$10$6eXQVPv8SBbKvivehAXVWe/lotzezRfMWZ3oc82vfxHUYZnKp0gVG", // plain = password
+    phone_number: "0123456789",
+    score: 25,
     address: "Hanoi",
   },
   {

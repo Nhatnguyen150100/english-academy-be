@@ -6,6 +6,7 @@ import examCompletionRouter from "./examCompletionRouter";
 import examRouter from "./examRouter";
 import imagesRouter from "./imagesRouter";
 import missionDailyRouter from "./missionDailyRouter";
+import rankRouter from "./rankRouter";
 
 const prefixURL = "/v1";
 
@@ -20,6 +21,7 @@ const setUpRouters = (app) => {
   app.use(buildUrl("/exams"), examRouter);
   app.use(buildUrl("/mission-daily"), missionDailyRouter);
   app.use(buildUrl("/exam-completion"), examCompletionRouter);
+  app.use(buildUrl("/rank"), rankRouter);
 }
 
 export default setUpRouters;
