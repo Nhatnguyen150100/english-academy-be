@@ -1,0 +1,355 @@
+{
+	"info": {
+		"_postman_id": "7bbf4891-cf10-426f-8399-f9501f560861",
+		"name": "English academy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38240534"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"user1@gmail.com\",\r\n    \"password\": \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Courses",
+			"item": [
+				{
+					"name": "Get course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTczODY0MjA3OCwiZXhwIjoxNzM4NzI4NDc4fQ.Ywmv5InpOztXU7Y0gzDU1n8wm-E0NayWVQlLb8eMiXSrfmG0Nm2a641Mv1lwez-W1gyLS2wuHo2BAtlqh3aq_cqh5Dep9GhZ46ALVMZLslGjNVYthbohP0B_qpK98F_QSjbn4D9tjIESaJLp1RWcxfKxLVnNNi2Fqo91C6gnJEyOQXxkzPrQqBzK-9_azZ0cs9yKovqm6LrbOJgbEvHgsCU9_540481sEk_YJZMBMLjPPp4RxWiu0L82XXza35a9tXixav2aaoX3Jwvi87bAVknlD2mPyw8QMfPgRL-9eBSrelI_noXNMWo1ap9vYXmHt-EPjh3giXiYFsauvL0Ktw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/courses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get course defail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTczODY0MjA3OCwiZXhwIjoxNzM4NzI4NDc4fQ.Ywmv5InpOztXU7Y0gzDU1n8wm-E0NayWVQlLb8eMiXSrfmG0Nm2a641Mv1lwez-W1gyLS2wuHo2BAtlqh3aq_cqh5Dep9GhZ46ALVMZLslGjNVYthbohP0B_qpK98F_QSjbn4D9tjIESaJLp1RWcxfKxLVnNNi2Fqo91C6gnJEyOQXxkzPrQqBzK-9_azZ0cs9yKovqm6LrbOJgbEvHgsCU9_540481sEk_YJZMBMLjPPp4RxWiu0L82XXza35a9tXixav2aaoX3Jwvi87bAVknlD2mPyw8QMfPgRL-9eBSrelI_noXNMWo1ap9vYXmHt-EPjh3giXiYFsauvL0Ktw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/courses/67a178ec07967fd22fd74017",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"courses",
+								"67a178ec07967fd22fd74017"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Mission daily",
+			"item": [
+				{
+					"name": "Get mission daily",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2ExYTE5NzA0YjkxYjJmYzM0YzE5NzgiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzM4NjQ2MDAzLCJleHAiOjE3Mzg3MzI0MDN9.zglsrGErFpU0jdEHUp4JUxL8NK9hAX6DGFrmaZ5pb4uDSPnaMg_BVfdsw06grTaTq_qnZqmkwaWsCE9zsgjn-ELtcXkNBe2-fqlvOHLj43WVHtw2iCnFsw_7IREmU-qJCQ8TUg3gqFBtxw-lXqfCFaMvbWSIWOd2ncgsoSnOXn3E864RcuIS2vI72m7VXjR-6wg1Vk-DqMsVIwl-50EhXpO9i1wlft1XPORS7wl50nnYqvTFIDZZbSIz18Bi9wnRm1VyH0mSQjT1Z30fSpWygOWuyI_6kLutP_kvVnXlg3wzZkIKNcaVWnfEPRCaIkKedmSbd5i6OZR1JpiQIt_R4A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/mission-daily",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"mission-daily"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create mission daily",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2ExYTE5NzA0YjkxYjJmYzM0YzE5NzgiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzM4NjQ2MDAzLCJleHAiOjE3Mzg3MzI0MDN9.zglsrGErFpU0jdEHUp4JUxL8NK9hAX6DGFrmaZ5pb4uDSPnaMg_BVfdsw06grTaTq_qnZqmkwaWsCE9zsgjn-ELtcXkNBe2-fqlvOHLj43WVHtw2iCnFsw_7IREmU-qJCQ8TUg3gqFBtxw-lXqfCFaMvbWSIWOd2ncgsoSnOXn3E864RcuIS2vI72m7VXjR-6wg1Vk-DqMsVIwl-50EhXpO9i1wlft1XPORS7wl50nnYqvTFIDZZbSIz18Bi9wnRm1VyH0mSQjT1Z30fSpWygOWuyI_6kLutP_kvVnXlg3wzZkIKNcaVWnfEPRCaIkKedmSbd5i6OZR1JpiQIt_R4A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/mission-daily",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"mission-daily"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Complete mission daily",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2ExNzhlYzA3OTY3ZmQyMmZkNzQwMTIiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzM4NjQyNzU5LCJleHAiOjE3Mzg3MjkxNTl9.YQ-ej528-1U_LZmPKVSj1nXs4JmW7me40Y2E0VO8fl1Sr7UChKs2VeubizFOGTV8yo-yy4qhQr0BHFslNkaW0A3rHi6YvBFb1b-vIMaBaKs6TYzL0MAeU7X6UwGrNMUvn6MpGDgi4F1XnwlWFWbAgcMEjWKEW9jylE96Kpd846pPCV32bpypwlEnLJY7zV2_q31vDuqUL9rd8j00VxIvun-u0CGXjAqq-r7m5_umyOkeRQRhWz-fw-UgYr7lqIx70T0YSZe5SW4AHFPgtgA116LbLYSZoeDt4Bb48KATqepaylCh96lMkZGm1gai99HYJ7OyDq0LRI3wST1lSzfX7w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/mission-daily/confirm/67a1954f50e32cc5eacadbe2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"mission-daily",
+								"confirm",
+								"67a1954f50e32cc5eacadbe2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Exam completion",
+			"item": [
+				{
+					"name": "Submit exam",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2ExNzhlYzA3OTY3ZmQyMmZkNzQwMTIiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzM4NjQyNzU5LCJleHAiOjE3Mzg3MjkxNTl9.YQ-ej528-1U_LZmPKVSj1nXs4JmW7me40Y2E0VO8fl1Sr7UChKs2VeubizFOGTV8yo-yy4qhQr0BHFslNkaW0A3rHi6YvBFb1b-vIMaBaKs6TYzL0MAeU7X6UwGrNMUvn6MpGDgi4F1XnwlWFWbAgcMEjWKEW9jylE96Kpd846pPCV32bpypwlEnLJY7zV2_q31vDuqUL9rd8j00VxIvun-u0CGXjAqq-r7m5_umyOkeRQRhWz-fw-UgYr7lqIx70T0YSZe5SW4AHFPgtgA116LbLYSZoeDt4Bb48KATqepaylCh96lMkZGm1gai99HYJ7OyDq0LRI3wST1lSzfX7w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"examId\": \"67a178ec07967fd22fd74020\",\r\n    \"listAnswer\": [\r\n        {\r\n            \"questionId\": \"67a178ec07967fd22fd74021\",\r\n            \"answer\": \"was\"\r\n        },\r\n        {\r\n            \"questionId\": \"67a178ec07967fd22fd74025\",\r\n            \"answer\": \"have\"\r\n        },\r\n        {\r\n            \"questionId\": \"67a178ec07967fd22fd74029\",\r\n            \"answer\": \"goes\"\r\n        },\r\n        {\r\n            \"questionId\": \"67a178ec07967fd22fd7402d\",\r\n            \"answer\": \"play\"\r\n        },\r\n        {\r\n            \"questionId\": \"67a178ec07967fd22fd74031\",\r\n            \"answer\": \"want\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/v1/exam-completion/submit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"exam-completion",
+								"submit"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Exam",
+			"item": [
+				{
+					"name": "Get exam detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2ExNzhlYzA3OTY3ZmQyMmZkNzQwMTIiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzM4NjQyNzU5LCJleHAiOjE3Mzg3MjkxNTl9.YQ-ej528-1U_LZmPKVSj1nXs4JmW7me40Y2E0VO8fl1Sr7UChKs2VeubizFOGTV8yo-yy4qhQr0BHFslNkaW0A3rHi6YvBFb1b-vIMaBaKs6TYzL0MAeU7X6UwGrNMUvn6MpGDgi4F1XnwlWFWbAgcMEjWKEW9jylE96Kpd846pPCV32bpypwlEnLJY7zV2_q31vDuqUL9rd8j00VxIvun-u0CGXjAqq-r7m5_umyOkeRQRhWz-fw-UgYr7lqIx70T0YSZe5SW4AHFPgtgA116LbLYSZoeDt4Bb48KATqepaylCh96lMkZGm1gai99HYJ7OyDq0LRI3wST1lSzfX7w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/exams/67a178ec07967fd22fd74020",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"exams",
+								"67a178ec07967fd22fd74020"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Rank",
+			"item": [
+				{
+					"name": "Get ranks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2ExNzhlYzA3OTY3ZmQyMmZkNzQwMTIiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzM4NjQyNzU5LCJleHAiOjE3Mzg3MjkxNTl9.YQ-ej528-1U_LZmPKVSj1nXs4JmW7me40Y2E0VO8fl1Sr7UChKs2VeubizFOGTV8yo-yy4qhQr0BHFslNkaW0A3rHi6YvBFb1b-vIMaBaKs6TYzL0MAeU7X6UwGrNMUvn6MpGDgi4F1XnwlWFWbAgcMEjWKEW9jylE96Kpd846pPCV32bpypwlEnLJY7zV2_q31vDuqUL9rd8j00VxIvun-u0CGXjAqq-r7m5_umyOkeRQRhWz-fw-UgYr7lqIx70T0YSZe5SW4AHFPgtgA116LbLYSZoeDt4Bb48KATqepaylCh96lMkZGm1gai99HYJ7OyDq0LRI3wST1lSzfX7w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/rank",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"rank"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get my rank",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2ExYTE5NzA0YjkxYjJmYzM0YzE5NzgiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzM4NjQ2MDAzLCJleHAiOjE3Mzg3MzI0MDN9.zglsrGErFpU0jdEHUp4JUxL8NK9hAX6DGFrmaZ5pb4uDSPnaMg_BVfdsw06grTaTq_qnZqmkwaWsCE9zsgjn-ELtcXkNBe2-fqlvOHLj43WVHtw2iCnFsw_7IREmU-qJCQ8TUg3gqFBtxw-lXqfCFaMvbWSIWOd2ncgsoSnOXn3E864RcuIS2vI72m7VXjR-6wg1Vk-DqMsVIwl-50EhXpO9i1wlft1XPORS7wl50nnYqvTFIDZZbSIz18Bi9wnRm1VyH0mSQjT1Z30fSpWygOWuyI_6kLutP_kvVnXlg3wzZkIKNcaVWnfEPRCaIkKedmSbd5i6OZR1JpiQIt_R4A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/v1/rank/my-rank",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"rank",
+								"my-rank"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
