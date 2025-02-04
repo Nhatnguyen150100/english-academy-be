@@ -2,7 +2,7 @@ const { Schema, model } = require("mongoose");
 
 const missionDailySchema = new Schema(
   {
-    accountId: {
+    userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -23,11 +23,11 @@ const missionDailySchema = new Schema(
     isConfirmed: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   { timestamps: true },
 );
 
 const MissionDaily = model("MissionDaily", missionDailySchema);
 
-module.exports = MissionDaily;
+module.exports = { MissionDaily };

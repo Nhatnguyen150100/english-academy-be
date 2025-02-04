@@ -5,6 +5,7 @@ import {
 } from "../config/baseResponse.js";
 import logger from "../config/winston.js";
 import { Exam } from "../models/exam";
+import examCompletionService from "./examCompletionService.js";
 
 const examService = {
   createExam: async (examData) => {
@@ -62,12 +63,19 @@ const examService = {
     }
   },
 
-  getExamById: async (id) => {
+  getExamById: async (userId, id) => {
     try {
       const exam = await Exam.findById(id);
       if (!exam) {
         return new BaseErrorResponse({
           message: "Exam not found",
+        });
+      }
+      const { canAttempt, message } =
+        await examCompletionService.canAttemptExam(userId);
+      if (!canAttempt) {
+        throw new BaseErrorResponse({
+          message,
         });
       }
       const examObject = exam.toObject();
@@ -80,7 +88,7 @@ const examService = {
 
       return new BaseSuccessResponse({
         data: examObject,
-        message: "Fetched exam successfully",
+        message,
       });
     } catch (error) {
       logger.error(error.message);

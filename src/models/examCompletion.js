@@ -23,4 +23,4 @@ const examCompletionSchema = new Schema(
 
 const ExamCompletion = model("ExamCompletion", examCompletionSchema);
 
-module.exports = ExamCompletion;
+module.exports = { ExamCompletion };
