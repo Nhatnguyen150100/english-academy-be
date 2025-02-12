@@ -1,12 +1,32 @@
-version: '3.4'
+version: "3.8"
 
 services:
-  backend:
-    image: backend
+
+  backend-app:
     build:
-      context: .
+      context: ./app
       dockerfile: ./Dockerfile
-    environment:
-      NODE_ENV: production
     ports:
-      - 8080:8080
+      - "8081:8081"
+    networks:
+      - my-network
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/db_english_academy
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    networks:
+      - my-network
+    volumes:
+      - mongo-data:/data/db
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
