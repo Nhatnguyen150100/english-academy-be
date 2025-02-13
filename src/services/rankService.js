@@ -13,9 +13,14 @@ const rankService = {
         .sort({ score: -1 })
         .select("name score accountType")
         .lean();
+        
+      const listRanks = rankings.map((rank, index) => ({
+        ...rank,
+        rankNumber: index + 1
+      }));
 
       return new BaseSuccessResponse({
-        data: rankings,
+        data: listRanks,
         message: "Rankings retrieved successfully.",
       });
     } catch (error) {
