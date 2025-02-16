@@ -48,6 +48,87 @@ const users = [
     address: "Hanoi",
   },
   {
+    email: "user4@gmail.com",
+    name: "Nguyen Van D",
+    role: "USER",
+    password: "$2b$10$6eXQVPv8SBbKvivehAXVWe/lotzezRfMWZ3oc82vfxHUYZnKp0gVG", // plain = password
+    phone_number: "0123456789",
+    score: 25,
+    address: "Hanoi",
+  },
+  {
+    email: "user5@gmail.com",
+    name: "Nguyen Van E",
+    role: "USER",
+    password: "$2b$10$6eXQVPv8SBbKvivehAXVWe/lotzezRfMWZ3oc82vfxHUYZnKp0gVG", // plain = password
+    phone_number: "0123456789",
+    score: 25,
+    address: "Hanoi",
+  },
+  {
+    email: "user6@gmail.com",
+    name: "Nguyen Van F",
+    role: "USER",
+    password: "$2b$10$6eXQVPv8SBbKvivehAXVWe/lotzezRfMWZ3oc82vfxHUYZnKp0gVG", // plain = password
+    phone_number: "0123456789",
+    score: 15,
+    address: "Hanoi",
+  },
+  {
+    email: "user7@gmail.com",
+    name: "Nguyen Van G",
+    role: "USER",
+    password: "$2b$10$6eXQVPv8SBbKvivehAXVWe/lotzezRfMWZ3oc82vfxHUYZnKp0gVG", // plain = password
+    phone_number: "0123456789",
+    score: 35,
+    address: "Hanoi",
+  },
+  {
+    email: "user8@gmail.com",
+    name: "Nguyen Van H",
+    role: "USER",
+    password: "$2b$10$6eXQVPv8SBbKvivehAXVWe/lotzezRfMWZ3oc82vfxHUYZnKp0gVG", // plain = password
+    phone_number: "0123456789",
+    score: 25,
+    address: "Hanoi",
+  },
+  {
+    email: "user9@gmail.com",
+    name: "Nguyen Van I",
+    role: "USER",
+    password: "$2b$10$6eXQVPv8SBbKvivehAXVWe/lotzezRfMWZ3oc82vfxHUYZnKp0gVG", // plain = password
+    phone_number: "0123456789",
+    score: 65,
+    address: "Hanoi",
+  },
+  {
+    email: "user10@gmail.com",
+    name: "Nguyen Van K",
+    role: "USER",
+    password: "$2b$10$6eXQVPv8SBbKvivehAXVWe/lotzezRfMWZ3oc82vfxHUYZnKp0gVG", // plain = password
+    phone_number: "0123456789",
+    score: 95,
+    address: "Hanoi",
+  },
+  {
+    email: "user11@gmail.com",
+    name: "Nguyen Van K",
+    role: "USER",
+    password: "$2b$10$6eXQVPv8SBbKvivehAXVWe/lotzezRfMWZ3oc82vfxHUYZnKp0gVG", // plain = password
+    phone_number: "0123456789",
+    score: 165,
+    address: "Hanoi",
+  },
+  {
+    email: "user12@gmail.com",
+    name: "Nguyen Van L",
+    role: "USER",
+    password: "$2b$10$6eXQVPv8SBbKvivehAXVWe/lotzezRfMWZ3oc82vfxHUYZnKp0gVG", // plain = password
+    phone_number: "0123456789",
+    score: 35,
+    address: "Hanoi",
+  },
+  {
     email: "admin@gmail.com",
     name: "Admin",
     role: "ADMIN",
