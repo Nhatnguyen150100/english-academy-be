@@ -8,6 +8,7 @@ const authRouter = express.Router();
 
 authRouter.post("/login", authController.login);
 authRouter.get("/me", tokenMiddleware.verifyToken, authController.me);
+authRouter.put("/update", tokenMiddleware.verifyToken, authController.updateInfo);
 authRouter.get("/google", passportController.authenticateByGoogle);
 authRouter.get("/google/callback", passportController.authenticateCallback);
 authRouter.post(

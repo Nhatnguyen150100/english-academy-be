@@ -45,6 +45,16 @@ const authController = {
       res.status(error.status).json(error);
     }
   },
+  updateInfo: async (req, res) => {
+    try {
+      const userId = req.user._id;
+      const rs = await authService.updateInfo(userId, req.body);
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status).json(error);
+    }
+  }
 };
 
 export default authController;
