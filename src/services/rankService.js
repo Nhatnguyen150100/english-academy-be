@@ -7,16 +7,27 @@ import { ExamCompletion } from "../models/examCompletion";
 import { Exam } from "../models/exam";
 
 const rankService = {
-  getRankings: async () => {
+  getRankings: async (query) => {
     try {
-      const rankings = await User.find({ score: { $gt: 0 } })
+      const { name } = query;
+      const filter = {
+        score: { $gt: 0 },
+        ...(name && {
+          name: {
+            $regex: name,
+            $options: "i",
+          },
+        }),
+      };
+
+      const rankings = await User.find(filter)
         .sort({ score: -1 })
         .select("name score accountType")
         .lean();
-        
+
       const listRanks = rankings.map((rank, index) => ({
         ...rank,
-        rankNumber: index + 1
+        rankNumber: index + 1,
       }));
 
       return new BaseSuccessResponse({
@@ -39,7 +50,7 @@ const rankService = {
           message: "User not found.",
         });
       }
-      
+
       if (user.score <= 0) {
         return new BaseSuccessResponse({
           data: {

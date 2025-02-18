@@ -6,7 +6,7 @@ import rankService from "../services/rankService";
 const rankController = {
   getRankings: async (req, res) => {
     try {
-      const rs = await rankService.getRankings();
+      const rs = await rankService.getRankings(req.query);
       res.status(rs.status).json(rs);
     } catch (error) {
       logger.error(error.message);
