@@ -47,13 +47,13 @@ const missionDailyService = {
     try {
       const missionDaily = await MissionDaily.findById(missionDailyId);
 
-      if (!missionDaily.loggedIn) {
+      if (!missionDaily?.loggedIn) {
         return new BaseErrorResponse({
           message: "Please log in first to confirm mission daily",
         });
       }
 
-      if (!missionDaily.completedExam) {
+      if (!missionDaily?.completedExam) {
         return new BaseErrorResponse({
           message: "Please complete the exam to confirm mission daily",
         });
