@@ -192,6 +192,34 @@ const authService = {
       }
     });
   },
+  getUserInfo: (userId) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const user = await User.findById(userId);
+        if (!user) {
+          return resolve(
+            new BaseErrorResponse({
+              message: "User not found",
+            }),
+          );
+        }
+        delete user._doc.password;
+        return resolve(
+          new BaseSuccessResponse({
+            data: user._doc,
+            message: "Get user information successfully",
+          }),
+        );
+      } catch (error) {
+        logger.error(error.message);
+        reject(
+          new BaseErrorResponse({
+            message: error.message,
+          }),
+        );
+      }
+    });
+  },
 };
 
 export default authService;

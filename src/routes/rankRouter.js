@@ -13,4 +13,6 @@ rankRouter.get(
   rankController.getUserRank,
 );
 
+rankRouter.get("/:id", tokenMiddleware.verifyToken, rankController.getUserInfoRank)
+
 export default rankRouter;

@@ -84,7 +84,7 @@ const rankService = {
         message: error.message,
       });
     }
-  },
+  }
 };
 
 export default rankService;

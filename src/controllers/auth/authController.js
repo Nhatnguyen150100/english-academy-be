@@ -45,6 +45,16 @@ const authController = {
       res.status(error.status).json(error);
     }
   },
+  getUserInfo: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const rs = await authService.getUserInfo(id);
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status).json(error);
+    }
+  },
   updateInfo: async (req, res) => {
     try {
       const userId = req.user._id;
@@ -54,7 +64,7 @@ const authController = {
       logger.error(error.message);
       res.status(error.status).json(error);
     }
-  }
+  },
 };
 
 export default authController;
