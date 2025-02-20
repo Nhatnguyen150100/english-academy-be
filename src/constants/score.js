@@ -1,8 +1,8 @@
 const DEFINE_SCORE = {
-  SCORE_MISSION_DAILY: 5,
-  EASY: 5,
-  MEDIUM: 10,
-  HARD: 15,
+  SCORE_MISSION_DAILY: 10,
+  EASY: 15,
+  MEDIUM: 20,
+  HARD: 25,
 };
 
 export default DEFINE_SCORE;
