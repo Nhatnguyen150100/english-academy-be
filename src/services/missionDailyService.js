@@ -9,10 +9,16 @@ import DEFINE_SCORE from "../constants/score"
 const missionDailyService = {
   getMissionDaily: async (userId) => {
     try {
+      const now = new Date();
+      const startOfTodayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+      const endOfTodayUTC = new Date(startOfTodayUTC);
+      endOfTodayUTC.setUTCDate(endOfTodayUTC.getUTCDate() + 1);
+  
       const missionDaily = await MissionDaily.findOne({
         userId,
+        date: { $gte: startOfTodayUTC, $lt: endOfTodayUTC }
       });
-
+  
       return new BaseSuccessResponse({
         data: missionDaily,
         message: "Mission daily data retrieved successfully",
