@@ -32,6 +32,20 @@ const missionDailyService = {
   },
   createMissionDaily: async (userId) => {
     try {
+      const now = new Date();
+      const startOfTodayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+      const endOfTodayUTC = new Date(startOfTodayUTC);
+      endOfTodayUTC.setUTCDate(endOfTodayUTC.getUTCDate() + 1);
+  
+      const missionCheck = await MissionDaily.findOne({
+        userId,
+        date: { $gte: startOfTodayUTC, $lt: endOfTodayUTC }
+      });
+      if(missionCheck?.loggedIn) {
+        return new BaseErrorResponse({
+          message: "You have already logged in today",
+        });
+      }
       const missionDaily = new MissionDaily({
         userId,
         loggedIn: true
