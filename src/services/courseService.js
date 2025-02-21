@@ -4,10 +4,10 @@ import {
   BaseSuccessResponse,
 } from "../config/baseResponse.js";
 import logger from "../config/winston.js";
-import { Course } from "../models/courses";
+import { Course } from "../models/courses.js";
 import { Exam } from "../models/exam.js";
 
-const sourceService = {
+const courseService = {
   createCourse: async (courseData) => {
     try {
       const course = new Course(courseData);
@@ -41,7 +41,7 @@ const sourceService = {
 
       return new BaseSuccessResponse({
         data: {
-          courses,
+          data: courses,
           total: totalCourses,
           page,
           totalPages: Math.ceil(totalCourses / limit),
@@ -131,4 +131,4 @@ const sourceService = {
   },
 };
 
-export default sourceService;
+export default courseService;

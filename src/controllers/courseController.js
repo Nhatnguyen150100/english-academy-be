@@ -1,13 +1,13 @@
 "use strict";
 
 import logger from "../config/winston";
-import sourceService from "../services/sourceService";
+import courseService from "../services/courseService";
 
 const courseController = {
   createCourse: async (req, res) => {
     try {
       const courseData = req.body;
-      const rs = await sourceService.createCourse(courseData);
+      const rs = await courseService.createCourse(courseData);
       res.status(rs.status).json(rs);
     } catch (error) {
       logger.error(error.message);
@@ -17,11 +17,11 @@ const courseController = {
 
   getCourses: async (req, res) => {
     try {
-      const { page, limit, searchTerm } = req.query;
-      const rs = await sourceService.getCourses(
+      const { page, limit, name } = req.query;
+      const rs = await courseService.getCourses(
         Number(page),
         Number(limit),
-        searchTerm,
+        name,
       );
       res.status(rs.status).json(rs);
     } catch (error) {
@@ -33,7 +33,7 @@ const courseController = {
   getCourseById: async (req, res) => {
     try {
       const { id } = req.params;
-      const rs = await sourceService.getCourseById(id);
+      const rs = await courseService.getCourseById(id);
       res.status(rs.status).json(rs);
     } catch (error) {
       logger.error(error.message);
@@ -45,7 +45,7 @@ const courseController = {
     try {
       const { id } = req.params;
       const courseData = req.body;
-      const rs = await sourceService.updateCourse(id, courseData);
+      const rs = await courseService.updateCourse(id, courseData);
       res.status(rs.status).json(rs);
     } catch (error) {
       logger.error(error.message);
@@ -56,7 +56,7 @@ const courseController = {
   deleteCourse: async (req, res) => {
     try {
       const { id } = req.params;
-      const rs = await sourceService.deleteCourse(id);
+      const rs = await courseService.deleteCourse(id);
       res.status(rs.status).json(rs);
     } catch (error) {
       logger.error(error.message);
