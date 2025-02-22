@@ -12,6 +12,13 @@ const examCompletionSchema = new Schema(
       ref: "Exam",
       required: true,
     },
+    score: {
+      type: Number,
+      min: 0,
+      max: 100,
+      required: true,
+      default: 0,
+    },
     completedDate: {
       type: Date,
       default: Date.now,

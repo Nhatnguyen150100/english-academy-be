@@ -44,7 +44,7 @@ const courseService = {
           data: courses,
           total: totalCourses,
           page,
-          totalPages: Math.ceil(totalCourses / limit),
+          totalPages: Math.ceil(totalCourses / limit) ?? 1,
         },
         message: "Fetched courses successfully",
       });

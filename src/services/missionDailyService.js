@@ -79,12 +79,17 @@ const missionDailyService = {
         });
       }
 
-      await MissionDaily.findByIdAndUpdate(missionDailyId, { confirmed: true });
+      if(missionDaily?.loggedIn && missionDaily?.completedExam && missionDaily?.isConfirmed) {
+        return new BaseErrorResponse({
+          message: "Mission daily has already been confirmed",
+        });
+      }
+
+      await MissionDaily.findByIdAndUpdate(missionDaily._id, { isConfirmed: true });
 
       await User.findByIdAndUpdate(
         missionDaily.userId,
-        { $inc: { score: DEFINE_SCORE.SCORE_MISSION_DAILY } },
-        { new: true },
+        { $inc: { score: DEFINE_SCORE.SCORE_MISSION_DAILY } }
       );
 
       return new BaseSuccessResponse({

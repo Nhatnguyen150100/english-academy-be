@@ -7,10 +7,9 @@ import { ExamCompletion } from "../models/examCompletion";
 import { Exam } from "../models/exam";
 
 const rankService = {
-  getRankings: async (query) => {
+  getRankings: async (page = 1, limit = 10, name = "") => {
     try {
-      const { name } = query;
-      const filter = {
+      const query = {
         score: { $gt: 0 },
         ...(name && {
           name: {
@@ -20,18 +19,27 @@ const rankService = {
         }),
       };
 
-      const rankings = await User.find(filter)
+      const rankings = await User.find(query)
         .sort({ score: -1 })
         .select("name score accountType")
-        .lean();
+        .lean()
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+      const totalRecord = await User.countDocuments(query);
 
       const listRanks = rankings.map((rank, index) => ({
         ...rank,
-        rankNumber: index + 1,
+        rankNumber: (page - 1) * limit + index + 1,
       }));
 
       return new BaseSuccessResponse({
-        data: listRanks,
+        data: {
+          data: listRanks,
+          total: totalRecord,
+          page,
+          totalPages: Math.ceil(totalRecord / limit) ?? 1,
+        },
         message: "Rankings retrieved successfully.",
       });
     } catch (error) {
@@ -84,7 +92,7 @@ const rankService = {
         message: error.message,
       });
     }
-  }
+  },
 };
 
 export default rankService;

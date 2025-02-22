@@ -74,7 +74,7 @@ const examService = {
       const { canAttempt, message } =
         await examCompletionService.canAttemptExam(userId);
       if (!canAttempt) {
-        throw new BaseErrorResponse({
+        return new BaseErrorResponse({
           message,
         });
       }
@@ -86,8 +86,10 @@ const examService = {
         });
       }
 
+      const isCompleted = await examCompletionService.checkExamIsCompletedByUser(userId, id);
+
       return new BaseSuccessResponse({
-        data: examObject,
+        data: {...examObject, isCompleted},
         message,
       });
     } catch (error) {

@@ -19,6 +19,16 @@ const examCompletionController = {
       res.status(error.status).json(error);
     }
   },
+  checkNumberExamAttempt: async (req, res) => {
+    try {
+      const userId = req.user._id;
+      const rs = await examCompletionService.checkNumberExamAttempt(userId);
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status).json(error);
+    }
+  }
 };
 
 export default examCompletionController;
