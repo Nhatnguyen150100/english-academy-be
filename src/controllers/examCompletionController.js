@@ -28,7 +28,18 @@ const examCompletionController = {
       logger.error(error.message);
       res.status(error.status).json(error);
     }
-  }
+  },
+  getHistory: async (req, res) => {
+    try {
+      const userId = req.user._id;
+      const { page, limit } = req.query;
+      const rs = await examCompletionService.getHistory(userId, page, limit);
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status).json(error);
+    }
+  },
 };
 
 export default examCompletionController;

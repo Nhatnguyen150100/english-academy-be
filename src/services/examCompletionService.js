@@ -58,7 +58,7 @@ const examCompletionService = {
         completedDate: new Date(),
       });
       await examCompletion.save();
-      
+
       if (!allAnswered) {
         return new BaseSuccessResponse({
           message: "You have not answered all questions.",
@@ -108,7 +108,7 @@ const examCompletionService = {
       const examCompletion = await ExamCompletion.findOne({
         userId,
         examId,
-        score: 100
+        score: 100,
       });
       return !!examCompletion;
     } catch (error) {
@@ -185,18 +185,37 @@ const examCompletionService = {
       }
     });
   },
-  // getHistory: (userId) => {
-  //   return new Promise(async (resolve, reject) => {
-  //     try {
-  //       const exams = await ExamCompletion.find({ userId })
-  //        .populate("examId", "title")
-  //        .sort({ completedDate: -1 });
-
-  //     } catch {
-
-  //     }
-  //   })
-  // }
+  getHistory: (userId, page = 1, limit = 10) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const query = { userId };
+        const exams = await ExamCompletion.find(query)
+          .populate("examId", "name description level")
+          .sort({ completedDate: -1 })
+          .skip((page - 1) * limit)
+          .limit(limit);
+        const totalRecord = await User.countDocuments(query);
+        return resolve(
+          new BaseSuccessResponse({
+            data: {
+              data: exams,
+              total: totalRecord,
+              page,
+              totalPages: Math.ceil(totalRecord / limit) ?? 1,
+            },
+            message: "History retrieved successfully.",
+          }),
+        );
+      } catch {
+        logger.error(error.message);
+        return reject(
+          new BaseErrorResponse({
+            message: error.message,
+          }),
+        );
+      }
+    });
+  },
 };
 
 export default examCompletionService;
