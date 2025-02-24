@@ -1,6 +1,7 @@
 "use strict";
 
 import authRouter from "./authRouter";
+import blogRouter from "./blogRouter";
 import courseRouter from "./courseRouter";
 import examCompletionRouter from "./examCompletionRouter";
 import examRouter from "./examRouter";
@@ -22,6 +23,7 @@ const setUpRouters = (app) => {
   app.use(buildUrl("/mission-daily"), missionDailyRouter);
   app.use(buildUrl("/exam-completion"), examCompletionRouter);
   app.use(buildUrl("/rank"), rankRouter);
+  app.use(buildUrl("/blog"), blogRouter);
 }
 
 export default setUpRouters;
