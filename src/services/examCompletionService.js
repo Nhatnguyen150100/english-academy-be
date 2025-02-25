@@ -57,6 +57,12 @@ const examCompletionService = {
         score: averageScore,
         completedDate: new Date(),
       });
+
+      const isCompleted = await examCompletionService.checkExamIsCompletedByUser(
+        userId,
+        examId,
+      );
+      
       await examCompletion.save();
 
       if (!allAnswered) {
@@ -68,11 +74,6 @@ const examCompletionService = {
           },
         });
       }
-
-      const isCompleted = examCompletionService.checkExamIsCompletedByUser(
-        userId,
-        examId,
-      );
 
       if (!isCompleted) {
         // tăng điểm cho user
