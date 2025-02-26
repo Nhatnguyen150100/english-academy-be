@@ -23,7 +23,7 @@ const setUpRouters = (app) => {
   app.use(buildUrl("/mission-daily"), missionDailyRouter);
   app.use(buildUrl("/exam-completion"), examCompletionRouter);
   app.use(buildUrl("/rank"), rankRouter);
-  app.use(buildUrl("/blog"), blogRouter);
+  app.use(buildUrl("/blogs"), blogRouter);
 }
 
 export default setUpRouters;

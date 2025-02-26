@@ -29,10 +29,10 @@ const blogController = {
     }
   },
 
-  approvedStatusBlog: async (req, res) => {
+  statusBlog: async (req, res) => {
     try {
       const blogId = req.params.id;
-      const rs = await blogService.approvedStatusBlog(blogId);
+      const rs = await blogService.statusBlog(blogId, req.body);
       res.status(rs.status).json(rs);
     } catch (error) {
       logger.error(error.message);

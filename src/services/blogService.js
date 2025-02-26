@@ -57,15 +57,22 @@ const blogService = {
     }
   },
 
-  approvedStatusBlog: async (id) => {
+  statusBlog: async (id, data) => {
     try {
+      const { status } = data;
+      if (!["APPROVED", "REJECTED"].includes(status)) {
+        return new BaseErrorResponse({
+          message:
+            "Invalid status. Only 'APPROVED' and 'REJECTED' are allowed.",
+        });
+      }
       const blog = await Blog.findById(id);
       if (!blog) {
         return new BaseErrorResponse({
           message: "Blog not found",
         });
       }
-      blog.statusBlog = "APPROVED";
+      blog.statusBlog = status;
       await blog.save();
       return new BaseSuccessResponse({
         data: blog,
@@ -88,6 +95,7 @@ const blogService = {
           }
         : { statusBlog: "APPROVED" };
       const blogs = await Blog.find(query)
+        .select("-content")
         .skip((page - 1) * limit)
         .limit(limit);
 
@@ -137,6 +145,7 @@ const blogService = {
         ? { title: { $regex: search, $options: "i" }, userId }
         : { userId };
       const blogs = await Blog.find(query)
+        .select("-content")
         .skip((page - 1) * limit)
         .limit(limit);
 
@@ -168,7 +177,10 @@ const blogService = {
           message: "Blog not found",
         });
       }
-      if (blog.userId.toString() !== userId && user.role.toString() === "USER") {
+      if (
+        blog.userId.toString() !== userId &&
+        user.role.toString() === "USER"
+      ) {
         return new BaseErrorResponse({
           message: "Unauthorized to delete this blog",
         });

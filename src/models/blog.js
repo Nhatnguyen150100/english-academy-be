@@ -25,7 +25,7 @@ const blogSchema = new Schema(
     },
     statusBlog: {
       type: String,
-      enum: ["PENDING_APPROVED", "APPROVED"],
+      enum: ["PENDING_APPROVED", "APPROVED", "REJECTED"],
       default: "PENDING_APPROVED",
     }
   },
