@@ -10,14 +10,14 @@ const imagesRouter = express.Router();
 
 imagesRouter.post(
   "/upload-image",
-  tokenMiddleware.verifyTokenAdmin,
+  tokenMiddleware.verifyToken,
   upload.single("image"),
   (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
-    const apiGateWayUrl = process.env.BASE_URL_SERVER;
-    const imageUrl = `${apiGateWayUrl}/v1/events-static/uploads/${req.file.filename}`;
+    const baseURL = process.env.BASE_URL_SERVER;
+    const imageUrl = `${baseURL}/uploads/${req.file.filename}`;
     res.status(200).json(
       new BaseSuccessResponse({
         data: imageUrl,
