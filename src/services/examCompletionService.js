@@ -58,11 +58,9 @@ const examCompletionService = {
         completedDate: new Date(),
       });
 
-      const isCompleted = await examCompletionService.checkExamIsCompletedByUser(
-        userId,
-        examId,
-      );
-      
+      const isCompleted =
+        await examCompletionService.checkExamIsCompletedByUser(userId, examId);
+
       await examCompletion.save();
 
       if (!allAnswered) {
@@ -82,12 +80,27 @@ const examCompletionService = {
         });
 
         // kiểm tra nhiệm vụ hàng ngày
-        const missionDaily = await MissionDaily.findOne({
+        const now = new Date();
+        const startOfTodayUTC = new Date(
+          Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+        );
+        const endOfTodayUTC = new Date(startOfTodayUTC);
+        endOfTodayUTC.setUTCDate(endOfTodayUTC.getUTCDate() + 1);
+
+        const missionCheck = await MissionDaily.findOne({
           userId,
+          date: { $gte: startOfTodayUTC, $lt: endOfTodayUTC },
         });
 
-        if (!missionDaily.completedExam) {
-          await MissionDaily.findByIdAndUpdate(missionDaily._id, {
+        if (!missionCheck) {
+          const missionDaily = new MissionDaily({
+            userId,
+            loggedIn: true,
+          });
+
+          await missionDaily.save();
+        } else if (!missionCheck.completedExam) {
+          await MissionDaily.findByIdAndUpdate(missionCheck._id, {
             completedExam: true,
           });
         }
