@@ -168,6 +168,34 @@ const blogService = {
     }
   },
 
+  getBlogsByAdmin: async (page = 1, limit = 10, search = "") => {
+    try {
+      const query = search ? { title: { $regex: search, $options: "i" } } : {};
+      const blogs = await Blog.find(query)
+        .select("-content")
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+      const totalBlogs = await Blog.countDocuments(query);
+
+      return new BaseSuccessResponse({
+        data: {
+          data: blogs,
+          total: totalBlogs,
+          page,
+          totalPages: Math.ceil(totalBlogs / limit) ?? 1,
+        },
+        message: "Fetched blogs successfully",
+      });
+    } catch (error) {
+      logger.error(error.message);
+      throw new BaseErrorResponse({
+        message: error.message,
+      });
+    }
+  },
+
   deleteBlog: async (id, userId) => {
     try {
       const user = User.findById(userId);
@@ -177,15 +205,12 @@ const blogService = {
           message: "Blog not found",
         });
       }
-      if (
-        blog.userId.toString() !== userId &&
-        user.role.toString() === "USER"
-      ) {
+      if (blog.userId !== userId && user.role === "USER") {
         return new BaseErrorResponse({
           message: "Unauthorized to delete this blog",
         });
       }
-      await blog.remove();
+      await blog.deleteOne();
       return new BaseSuccessResponse({
         message: "Blog deleted successfully",
       });

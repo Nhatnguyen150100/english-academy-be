@@ -220,6 +220,67 @@ const authService = {
       }
     });
   },
+  listUser: (page = 1, limit = 10, name = "") => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const query = name
+          ? { name: { $regex: name, $options: "i" }, role: "USER" }
+          : { role: "USER" };
+        const users = await User.find(query)
+          .skip((page - 1) * limit)
+          .limit(limit);
+        const totalUsers = await User.countDocuments(query);
+        return resolve(
+          new BaseSuccessResponse({
+            data: {
+              data: users,
+              page,
+              total: totalUsers,
+              totalPages: Math.ceil(totalUsers / limit),
+            },
+            message: "List users successfully",
+          }),
+        );
+      } catch (error) {
+        logger.error(error.message);
+        reject(
+          new BaseErrorResponse({
+            message: error.message,
+          }),
+        );
+      }
+    });
+  },
+  updateAccountType: (userId, accountType) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const user = await User.findByIdAndUpdate(userId, {
+          accountType,
+        });
+        if (!user) {
+          return resolve(
+            new BaseErrorResponse({
+              message: "User not found",
+            }),
+          );
+        }
+        delete user._doc.password;
+        return resolve(
+          new BaseSuccessResponse({
+            data: user._doc,
+            message: "Update account type successfully",
+          }),
+        );
+      } catch (error) {
+        logger.error(error.message);
+        reject(
+          new BaseErrorResponse({
+            message: error.message,
+          }),
+        );
+      }
+    });
+  },
 };
 
 export default authService;

@@ -29,11 +29,13 @@ const courseService = {
       const query = searchTerm
         ? { name: { $regex: searchTerm, $options: "i" } }
         : {};
+
       const courses = await Course.find(query)
         .populate({
           path: "exams",
           select: "-questions",
         })
+        .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit);
 
@@ -44,14 +46,15 @@ const courseService = {
           data: courses,
           total: totalCourses,
           page,
-          totalPages: Math.ceil(totalCourses / limit) ?? 1,
+          totalPages: totalCourses ? Math.ceil(totalCourses / limit) : 1,
         },
         message: "Fetched courses successfully",
       });
     } catch (error) {
-      logger.error(error.message);
+      logger.error(`Error fetching courses: ${error.message}`);
       throw new BaseErrorResponse({
-        message: error.message,
+        message: "An error occurred while fetching courses.",
+        details: error.message,
       });
     }
   },
@@ -86,9 +89,7 @@ const courseService = {
 
   updateCourse: async (id, courseData) => {
     try {
-      const updatedCourse = await Course.findByIdAndUpdate(id, courseData, {
-        new: true,
-      });
+      const updatedCourse = await Course.findByIdAndUpdate(id, courseData);
       if (!updatedCourse) {
         return new BaseErrorResponse({
           message: "Course not found",

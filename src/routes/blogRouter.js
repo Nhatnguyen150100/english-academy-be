@@ -7,6 +7,7 @@ const blogRouter = express.Router();
 
 blogRouter.get("/", blogController.getAllBlogs);
 blogRouter.get("/by-user", tokenMiddleware.verifyToken, blogController.getBlogsByUser);
+blogRouter.get("/by-admin", tokenMiddleware.verifyToken, blogController.getBlogsByAdmin);
 blogRouter.get("/:id", blogController.getBlogDetail);
 blogRouter.post("/", tokenMiddleware.verifyToken, blogController.createBlog);
 blogRouter.put("/status-blog/:id", tokenMiddleware.verifyTokenAdmin, blogController.statusBlog);

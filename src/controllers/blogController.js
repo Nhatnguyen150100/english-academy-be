@@ -81,6 +81,22 @@ const blogController = {
     }
   },
 
+  getBlogsByAdmin: async (req, res) => {
+    try {
+      const page = parseInt(req.query.page);
+      const limit = parseInt(req.query.limit);
+      const rs = await blogService.getBlogsByAdmin(
+        page,
+        limit,
+        req.query.search,
+      );
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status).json(error);
+    }
+  },
+
   deleteBlog: async (req, res) => {
     try {
       const blogId = req.params.id;

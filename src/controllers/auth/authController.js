@@ -45,6 +45,27 @@ const authController = {
       res.status(error.status).json(error);
     }
   },
+  listUser: async (req, res) => {
+    try {
+      const { page, limit, name } = req.query;
+      const rs = await authService.listUser(Number(page), Number(limit), name);
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status).json(error);
+    }
+  },
+  updateAccountType: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { accountType } = req.body;
+      const rs = await authService.updateAccountType(id, accountType);
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status).json(error);
+    }
+  },
   getUserInfo: async (req, res) => {
     try {
       const { id } = req.params;

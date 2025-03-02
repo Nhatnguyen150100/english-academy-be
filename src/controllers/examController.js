@@ -17,11 +17,28 @@ const examController = {
 
   getExams: async (req, res) => {
     try {
-      const { page, limit, searchTerm } = req.query;
+      const { page, limit, name } = req.query;
       const rs = await examService.getExams(
         Number(page),
         Number(limit),
-        searchTerm,
+        name,
+      );
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status).json(error);
+    }
+  },
+
+  getExamsByCourseId: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { page, limit, name } = req.query;
+      const rs = await examService.getExamsByCourseId(
+        id,
+        Number(page),
+        Number(limit),
+        name,
       );
       res.status(rs.status).json(rs);
     } catch (error) {
@@ -34,7 +51,8 @@ const examController = {
     try {
       const { id } = req.params;
       const user = req.user;
-      const rs = await examService.getExamById(user._id, id);
+      const isAdmin = user.role === "ADMIN";
+      const rs = await examService.getExamById(user._id, id, isAdmin);
       res.status(rs.status).json(rs);
     } catch (error) {
       logger.error(error.message);
