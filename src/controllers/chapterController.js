@@ -1,13 +1,13 @@
 "use strict";
 
 import logger from "../config/winston";
-import examService from "../services/examService";
+import chapterService from "../services/chapterService";
 
-const examController = {
-  createExam: async (req, res) => {
+const chapterController = {
+  createChapter: async (req, res) => {
     try {
       const examData = req.body;
-      const rs = await examService.createExam(examData);
+      const rs = await chapterService.createChapter(examData);
       res.status(rs.status).json(rs);
     } catch (error) {
       logger.error(error.message);
@@ -15,26 +15,14 @@ const examController = {
     }
   },
 
-  getExams: async (req, res) => {
-    try {
-      const { page, limit, name } = req.query;
-      const rs = await examService.getExams(Number(page), Number(limit), name);
-      res.status(rs.status).json(rs);
-    } catch (error) {
-      logger.error(error.message);
-      res.status(error.status).json(error);
-    }
-  },
-
-  getExamsByChapterId: async (req, res) => {
+  getChaptersByCourseId: async (req, res) => {
     try {
       const { id } = req.params;
-      const { page, limit, name } = req.query;
-      const rs = await examService.getExamsByChapterId(
+      const { page, limit } = req.query;
+      const rs = await chapterService.getChaptersByCourseId(
         id,
-        Number(page),
-        Number(limit),
-        name,
+        Number(page) || 1,
+        Number(limit) || 5,
       );
       res.status(rs.status).json(rs);
     } catch (error) {
@@ -43,12 +31,10 @@ const examController = {
     }
   },
 
-  getExamById: async (req, res) => {
+  getChapterById: async (req, res) => {
     try {
       const { id } = req.params;
-      const user = req.user;
-      const isAdmin = user.role === "ADMIN";
-      const rs = await examService.getExamById(user._id, id, isAdmin);
+      const rs = await chapterService.getChapterById(id);
       res.status(rs.status).json(rs);
     } catch (error) {
       logger.error(error.message);
@@ -56,11 +42,10 @@ const examController = {
     }
   },
 
-  updateExam: async (req, res) => {
+  updateChapter: async (req, res) => {
     try {
       const { id } = req.params;
-      const examData = req.body;
-      const rs = await examService.updateExam(id, examData);
+      const rs = await chapterService.updateChapter(id, req.body);
       res.status(rs.status).json(rs);
     } catch (error) {
       logger.error(error.message);
@@ -68,10 +53,21 @@ const examController = {
     }
   },
 
-  deleteExam: async (req, res) => {
+  deleteChapter: async (req, res) => {
     try {
       const { id } = req.params;
-      const rs = await examService.deleteExam(id);
+      const rs = await chapterService.deleteChapter(id);
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status).json(error);
+    }
+  },
+
+  reorderChapters: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const rs = await chapterService.reorderChapters(id, req.body);
       res.status(rs.status).json(rs);
     } catch (error) {
       logger.error(error.message);
@@ -80,4 +76,4 @@ const examController = {
   },
 };
 
-export default examController;
+export default chapterController;

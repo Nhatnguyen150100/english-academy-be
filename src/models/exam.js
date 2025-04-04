@@ -26,9 +26,9 @@ const questionSchema = new Schema({
 
 const examSchema = new Schema(
   {
-    courseId: {
+    chapterId: {
       type: Schema.Types.ObjectId,
-      ref: "Course",
+      ref: "Chapter",
       required: true,
     },
     name: {
@@ -49,6 +49,7 @@ const examSchema = new Schema(
       required: true,
     },
     questions: [questionSchema],
+    order: Number,
   },
   { timestamps: true },
 );

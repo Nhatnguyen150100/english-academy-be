@@ -4,22 +4,23 @@ import {
   BaseSuccessResponse,
 } from "../config/baseResponse.js";
 import logger from "../config/winston.js";
-import { Course } from "../models/courses.js";
-import { Exam } from "../models/exam";
+import { Chapter } from "../models/chapter.js";
+import { Exam } from "../models/exam.js";
 import examCompletionService from "./examCompletionService.js";
 
 const examService = {
   createExam: async (examData) => {
     try {
-      if (!examData.courseId) {
+      if (!examData.chapterId) {
         return new BaseErrorResponse({
-          message: "courseId is required",
+          message: "chapterId is required",
         });
       }
+
       const exam = new Exam(examData);
       const savedExam = await exam.save();
 
-      await Course.findByIdAndUpdate(examData.courseId, {
+      await Chapter.findByIdAndUpdate(examData.chapterId, {
         $addToSet: { exams: savedExam._id },
       });
 
@@ -40,9 +41,17 @@ const examService = {
       const query = searchTerm
         ? { name: { $regex: searchTerm, $options: "i" } }
         : {};
+
       const exams = await Exam.find(query)
         .select("-questions")
-        .populate("courseId")
+        .populate({
+          path: "chapterId",
+          select: "title courseId",
+          populate: {
+            path: "courseId",
+            select: "name",
+          },
+        })
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit);
@@ -66,20 +75,20 @@ const examService = {
     }
   },
 
-  getExamsByCourseId: async (
-    courseId,
+  getExamsByChapterId: async (
+    chapterId,
     page = 1,
     limit = 10,
     searchTerm = "",
   ) => {
     try {
       const query = searchTerm
-        ? { name: { $regex: searchTerm, $options: "i" }, courseId }
-        : {courseId};
+        ? { name: { $regex: searchTerm, $options: "i" }, chapterId }
+        : { chapterId };
+
       const exams = await Exam.find(query)
         .select("-questions")
-        .populate("courseId")
-        .sort({ createdAt: -1 })
+        .sort({ order: 1, createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit);
 
@@ -104,7 +113,11 @@ const examService = {
 
   getExamById: async (userId, id, isAdmin) => {
     try {
-      const exam = await Exam.findById(id);
+      const exam = await Exam.findById(id).populate({
+        path: "chapterId",
+        select: "title courseId",
+      });
+
       if (!exam) {
         return new BaseErrorResponse({
           message: "Exam not found",
@@ -117,11 +130,13 @@ const examService = {
             canAttempt: true,
             message: "You can attempt this exam.",
           };
+
       if (!canAttempt) {
         return new BaseErrorResponse({
           message,
         });
       }
+
       const examObject = exam.toObject();
 
       if (examObject.questions && !isAdmin) {
@@ -147,7 +162,10 @@ const examService = {
 
   updateExam: async (id, examData) => {
     try {
-      const updatedExam = await Exam.findByIdAndUpdate(id, examData);
+      const updatedExam = await Exam.findByIdAndUpdate(id, examData, {
+        new: true,
+      }).populate("chapterId");
+
       if (!updatedExam) {
         return new BaseErrorResponse({
           message: "Exam not found",
@@ -167,12 +185,19 @@ const examService = {
 
   deleteExam: async (id) => {
     try {
-      const deletedExam = await Exam.findByIdAndDelete(id);
-      if (!deletedExam) {
+      const exam = await Exam.findById(id);
+      if (!exam) {
         return new BaseErrorResponse({
           message: "Exam not found",
         });
       }
+
+      await Chapter.findByIdAndUpdate(exam.chapterId, {
+        $pull: { exams: id },
+      });
+
+      const deletedExam = await Exam.findByIdAndDelete(id);
+
       return new BaseSuccessResponse({
         data: deletedExam,
         message: "Exam deleted successfully",

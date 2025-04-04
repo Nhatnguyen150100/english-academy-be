@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, models } = require("mongoose");
 const logger = require("../config/winston");
 
 const courseSchema = new Schema(
@@ -11,38 +11,43 @@ const courseSchema = new Schema(
       type: String,
       required: true,
     },
-    exams: [
+    chapters: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Exam",
+        ref: "Chapter",
       },
     ],
   },
   { timestamps: true },
 );
 
-const deleteMany = async () => {
-  try {
-    const result = await Course.deleteMany({});
-    logger.info(`Deleted ${result.deletedCount} courses successfully`);
-    return result;
-  } catch (error) {
-    logger.error("Delete failed:", error);
-    throw error;
-  }
+const courseHelpers = {
+  deleteMany: async () => {
+    try {
+      const result = await Course.deleteMany({});
+      logger.info(`Deleted ${result.deletedCount} courses successfully`);
+      return result;
+    } catch (error) {
+      logger.error("Delete failed:", error);
+      throw error;
+    }
+  },
+
+  insertMany: async (courses) => {
+    try {
+      const result = await Course.insertMany(courses);
+      logger.info(`Inserted ${result.length} courses successfully`);
+      return result;
+    } catch (error) {
+      logger.error("Insert failed:", error);
+      throw error;
+    }
+  },
 };
 
-const insertMany = async (courses) => {
-  try {
-    const result = await Course.insertMany(courses);
-    logger.info(`Inserted ${result.length} courses successfully`);
-    return result;
-  } catch (error) {
-    logger.error("Insert failed:", error);
-    throw error;
-  }
+const Course = models.Course || model("Course", courseSchema);
+
+module.exports = {
+  Course,
+  ...courseHelpers,
 };
-
-const Course = model("Course", courseSchema);
-
-module.exports = { Course, deleteMany, insertMany };

@@ -2,6 +2,7 @@
 
 import authRouter from "./authRouter";
 import blogRouter from "./blogRouter";
+import chapterRouter from "./chapterRouter";
 import courseRouter from "./courseRouter";
 import examCompletionRouter from "./examCompletionRouter";
 import examRouter from "./examRouter";
@@ -13,7 +14,7 @@ const prefixURL = "/v1";
 
 const buildUrl = (url) => {
   return `${prefixURL}${url}`;
-}
+};
 
 const setUpRouters = (app) => {
   app.use(buildUrl("/images"), imagesRouter);
@@ -24,6 +25,7 @@ const setUpRouters = (app) => {
   app.use(buildUrl("/exam-completion"), examCompletionRouter);
   app.use(buildUrl("/rank"), rankRouter);
   app.use(buildUrl("/blogs"), blogRouter);
-}
+  app.use(buildUrl("/chapter"), chapterRouter);
+};
 
 export default setUpRouters;

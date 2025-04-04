@@ -5,6 +5,7 @@ import {
 } from "../config/baseResponse.js";
 import logger from "../config/winston.js";
 import { Course } from "../models/courses.js";
+import { Chapter } from "../models/chapter.js";
 import { Exam } from "../models/exam.js";
 
 const courseService = {
@@ -32,8 +33,9 @@ const courseService = {
 
       const courses = await Course.find(query)
         .populate({
-          path: "exams",
-          select: "-questions",
+          path: "chapters",
+          select: "title description order",
+          options: { sort: { order: 1 } },
         })
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
@@ -61,22 +63,25 @@ const courseService = {
 
   getCourseById: async (id) => {
     try {
-      const course = await Course.findById(id);
+      const course = await Course.findById(id).populate({
+        path: "chapters",
+        populate: {
+          path: "exams",
+          select: "-questions",
+          model: "Exam",
+          options: { sort: { order: 1 } },
+        },
+        options: { sort: { order: 1 } },
+      });
+
       if (!course) {
         return new BaseErrorResponse({
           message: "Course not found",
         });
       }
 
-      const exams = await Exam.find({ courseId: id });
-
-      const convertExams = exams.map((item) => {
-        const { questions, courseId, ...rest } = item.toObject();
-        return rest;
-      });
-
       return new BaseSuccessResponse({
-        data: { ...course.toObject(), exams: convertExams },
+        data: course,
         message: "Fetched course successfully",
       });
     } catch (error) {
@@ -89,7 +94,10 @@ const courseService = {
 
   updateCourse: async (id, courseData) => {
     try {
-      const updatedCourse = await Course.findByIdAndUpdate(id, courseData);
+      const updatedCourse = await Course.findByIdAndUpdate(id, courseData, {
+        new: true,
+      }).populate("chapters");
+
       if (!updatedCourse) {
         return new BaseErrorResponse({
           message: "Course not found",
@@ -116,12 +124,18 @@ const courseService = {
         });
       }
 
-      await Exam.deleteMany({ courseId: id });
+      const chapters = await Chapter.find({ courseId: id });
+      const chapterIds = chapters.map((c) => c._id);
+
+      await Exam.deleteMany({ chapterId: { $in: chapterIds } });
+
+      await Chapter.deleteMany({ courseId: id });
 
       const deletedCourse = await Course.findByIdAndDelete(id);
+
       return new BaseSuccessResponse({
         data: deletedCourse,
-        message: "Course and related exams deleted successfully",
+        message: "Course and related content deleted successfully",
       });
     } catch (error) {
       logger.error(error.message);

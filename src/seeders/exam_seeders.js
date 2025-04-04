@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
-const { deleteMany, insertMany, Exam } = require("../models/exam");
+const { deleteMany, insertMany } = require("../models/exam");
 const dotenv = require("dotenv");
 const logger = require("../config/winston");
-const { Course } = require("../models/courses");
+const { Chapter } = require("../models/chapter");
 dotenv.config();
 
 const { connect, connection } = mongoose;
@@ -20,12 +20,13 @@ const connectDB = async () => {
   }
 };
 
-const exams = (courseId) => ([
+const generateExams = (chapterIds) => [
   {
     name: "English Exam 1",
     description: "Complete the sentences with the correct words.",
     timeExam: 60,
     level: "EASY",
+    chapterId: chapterIds[0],
     questions: [
       {
         content: "He ___ (be) a doctor for five years.",
@@ -74,13 +75,13 @@ const exams = (courseId) => ([
         correctAnswer: "want",
       },
     ],
-    courseId,
   },
   {
     name: "English Exam 2",
     description: "Complete the sentences with the correct words.",
     timeExam: 45,
     level: "MEDIUM",
+    chapterId: chapterIds[1],
     questions: [
       {
         content: "She ___ (be) a great singer.",
@@ -125,26 +126,38 @@ const exams = (courseId) => ([
         correctAnswer: "read",
       },
     ],
-    courseId,
   },
-]);
+];
 
 const seedExams = async () => {
   await connectDB();
 
-  await deleteMany();
+  try {
+    await deleteMany();
 
-  const courses = await Course.find();
+    const chapters = await Chapter.find().sort({ order: 1 });
+    if (chapters.length < 2) {
+      throw new Error("Need at least 2 chapters to seed exams");
+    }
 
-  await insertMany(exams(courses[0]._id));
+    const examsData = generateExams(chapters.map((c) => c._id));
+    const exams = await insertMany(examsData);
 
-  const examsData = await Exam.find();
+    for (const chapter of chapters) {
+      const chapterExams = exams.filter((e) => e.chapterId.equals(chapter._id));
+      await Chapter.findByIdAndUpdate(
+        chapter._id,
+        { $set: { exams: chapterExams.map((e) => e._id) } },
+        { new: true },
+      );
+    }
 
-  await Course.findByIdAndUpdate(courses[0]._id, ({...courses[0].toObject(), exams: examsData.map((item) => item._id)}), {
-    new: true,
-  });
-
-  connection.close();
+    logger.info(`Seeded ${exams.length} exams successfully`);
+  } catch (error) {
+    logger.error("Error seeding exams:", error);
+  } finally {
+    connection.close();
+  }
 };
 
 module.exports = seedExams;
