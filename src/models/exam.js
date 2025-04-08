@@ -37,13 +37,15 @@ const questionSchema = new Schema({
         if (this.type === "MCQ") {
           return (
             typeof value === "string" &&
-            this.options.some((opt) => opt._id.equals(value))
+            this.options.some((opt) => opt.content === value.toString())
           );
         }
         if (this.type === "ARRANGE") {
           return (
             Array.isArray(value) &&
-            value.every((id) => this.options.some((opt) => opt._id.equals(id)))
+            value.every((content) =>
+              this.options.some((opt) => opt.content === content.toString()),
+            )
           );
         }
         return false;
@@ -78,7 +80,6 @@ const examSchema = new Schema(
       required: true,
     },
     questions: [questionSchema],
-    order: Number,
   },
   { timestamps: true },
 );
