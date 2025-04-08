@@ -9,6 +9,12 @@ const optionSchema = new Schema({
 });
 
 const questionSchema = new Schema({
+  type: {
+    type: String,
+    enum: ["MCQ", "ARRANGE"],
+    required: true,
+    default: "MCQ",
+  },
   content: {
     type: String,
     required: true,
@@ -17,10 +23,33 @@ const questionSchema = new Schema({
     type: Number,
     required: true,
   },
-  options: [optionSchema],
+  options: {
+    type: [optionSchema],
+    required: function () {
+      return this.type === "MCQ";
+    },
+  },
   correctAnswer: {
-    type: String,
+    type: Schema.Types.Mixed,
     required: true,
+    validate: {
+      validator: function (value) {
+        if (this.type === "MCQ") {
+          return (
+            typeof value === "string" &&
+            this.options.some((opt) => opt._id.equals(value))
+          );
+        }
+        if (this.type === "ARRANGE") {
+          return (
+            Array.isArray(value) &&
+            value.every((id) => this.options.some((opt) => opt._id.equals(id)))
+          );
+        }
+        return false;
+      },
+      message: "Invalid correct answer format for question type",
+    },
   },
 });
 
