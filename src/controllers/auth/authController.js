@@ -22,6 +22,16 @@ const authController = {
       res.status(error.status).json(error);
     }
   },
+  requestToPremium: async (req, res) => {
+    try {
+      const user = req.user;
+      const rs = await authService.requestToPremium(user._id);
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status).json(error);
+    }
+  },
   register: async (req, res) => {
     try {
       const { email, password } = req.body;
@@ -47,8 +57,13 @@ const authController = {
   },
   listUser: async (req, res) => {
     try {
-      const { page, limit, name } = req.query;
-      const rs = await authService.listUser(Number(page), Number(limit), name);
+      const { page, limit, name, isRequestChangeToPremium } = req.query;
+      const rs = await authService.listUser(
+        Number(page),
+        Number(limit),
+        name,
+        Boolean(isRequestChangeToPremium),
+      );
       res.status(rs.status).json(rs);
     } catch (error) {
       logger.error(error.message);

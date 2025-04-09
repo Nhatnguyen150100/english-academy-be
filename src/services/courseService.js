@@ -34,6 +34,12 @@ const courseService = {
       const courses = await Course.find(query)
         .populate({
           path: "chapters",
+          populate: {
+            path: "exams",
+            select: "-questions",
+            model: "Exam",
+            options: { sort: { order: 1 } },
+          },
           select: "title description order",
           options: { sort: { order: 1 } },
         })

@@ -39,6 +39,30 @@ const chapters = (course) => [
     courseId: course._id,
     order: 3,
   },
+  {
+    title: "Chapter 4: Intermediate Grammar 2",
+    description: "Intermediate level grammar exercises",
+    courseId: course._id,
+    order: 4,
+  },
+  {
+    title: "Chapter 5: Intermediate Grammar 2",
+    description: "Intermediate level grammar exercises",
+    courseId: course._id,
+    order: 5,
+  },
+  {
+    title: "Chapter 6: Intermediate Grammar 2",
+    description: "Intermediate level grammar exercises",
+    courseId: course._id,
+    order: 6,
+  },
+  {
+    title: "Chapter 7: Intermediate Grammar 2",
+    description: "Intermediate level grammar exercises",
+    courseId: course._id,
+    order: 7,
+  },
 ];
 
 const seedChapters = async () => {

@@ -37,6 +37,7 @@ const users = [
     phone_number: "0123456789",
     score: 15,
     address: "Hanoi",
+    isRequestChangeToPremium: true,
   },
   {
     email: "user3@gmail.com",
@@ -46,6 +47,7 @@ const users = [
     phone_number: "0123456789",
     score: 25,
     address: "Hanoi",
+    isRequestChangeToPremium: true,
   },
   {
     email: "user4@gmail.com",
@@ -64,6 +66,7 @@ const users = [
     phone_number: "0123456789",
     score: 25,
     address: "Hanoi",
+    isRequestChangeToPremium: true,
   },
   {
     email: "user6@gmail.com",
@@ -73,6 +76,7 @@ const users = [
     phone_number: "0123456789",
     score: 15,
     address: "Hanoi",
+    isRequestChangeToPremium: true,
   },
   {
     email: "user7@gmail.com",
@@ -91,6 +95,7 @@ const users = [
     phone_number: "0123456789",
     score: 25,
     address: "Hanoi",
+    isRequestChangeToPremium: true,
   },
   {
     email: "user9@gmail.com",

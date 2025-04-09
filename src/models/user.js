@@ -35,6 +35,11 @@ const userSchema = new Schema(
       enum: ["FREE", "PREMIUM"],
       default: "FREE",
     },
+    isRequestChangeToPremium: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     address: {
       type: String,
     },

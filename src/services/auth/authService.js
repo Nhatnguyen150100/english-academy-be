@@ -45,6 +45,29 @@ const authService = {
       }
     });
   },
+  requestToPremium: (userId) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const user = await User.findByIdAndUpdate(userId, {
+          isRequestChangeToPremium: true,
+        });
+        return resolve(
+          new BaseSuccessResponse({
+            data: user,
+            message:
+              "Request to change Premium account success. Wait for ADMIN contact you!",
+          }),
+        );
+      } catch (error) {
+        logger.error(error.message);
+        reject(
+          new BaseErrorResponse({
+            message: error.message,
+          }),
+        );
+      }
+    });
+  },
   loginByGoogle: (email, name) => {
     return new Promise(async (resolve, reject) => {
       try {
@@ -220,16 +243,23 @@ const authService = {
       }
     });
   },
-  listUser: (page = 1, limit = 10, name = "") => {
+  listUser: (page = 1, limit = 10, name = "", isRequestChangeToPremium) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const query = name
-          ? { name: { $regex: name, $options: "i" }, role: "USER" }
-          : { role: "USER" };
+        const query = {
+          role: "USER",
+          ...(name && { name: { $regex: name, $options: "i" } }),
+        };
+
+        if (isRequestChangeToPremium === true) {
+          query.isRequestChangeToPremium = true;
+        }
+
         const users = await User.find(query)
           .skip((page - 1) * limit)
           .limit(limit);
         const totalUsers = await User.countDocuments(query);
+
         return resolve(
           new BaseSuccessResponse({
             data: {
@@ -254,9 +284,11 @@ const authService = {
   updateAccountType: (userId, accountType) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const user = await User.findByIdAndUpdate(userId, {
+        const data = {
           accountType,
-        });
+          isRequestChangeToPremium: false,
+        };
+        const user = await User.findByIdAndUpdate(userId, data);
         if (!user) {
           return resolve(
             new BaseErrorResponse({
