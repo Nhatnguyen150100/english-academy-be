@@ -22,34 +22,51 @@ const examCompletionService = {
     try {
       const exam = await Exam.findById(examId);
       if (!exam) {
-        throw new BaseErrorResponse({
-          message: "Exam not found",
-        });
+        throw new BaseErrorResponse({ message: "Exam not found" });
       }
 
-      const results = listAnswer.map((answer) => {
-        const question = exam.questions.find(
-          (q) => q._id.toString() === answer.questionId,
-        );
-        return {
-          questionId: answer.questionId,
-          correctAnswer: question.correctAnswer,
-          userAnswer: answer.answer,
-        };
-      });
+      const results = await Promise.all(
+        listAnswer.map(async (answer) => {
+          const question = exam.questions.find(
+            (q) => q._id.toString() === answer.questionId,
+          );
 
-      const allAnswered = results.every(
-        (item) => item.correctAnswer === item.userAnswer,
+          if (!question) {
+            throw new BaseErrorResponse({
+              message: `Question ${answer.questionId} not found in exam`,
+            });
+          }
+
+          let isCorrect = false;
+
+          if (question.type === "MCQ") {
+            isCorrect = answer.answer === question.correctAnswer.toString();
+          } else if (question.type === "ARRANGE") {
+            const userAnswer = Array.isArray(answer.answer)
+              ? answer.answer
+              : [answer.answer];
+
+            isCorrect =
+              JSON.stringify(userAnswer) ===
+              JSON.stringify(question.correctAnswer);
+          }
+
+          return {
+            questionId: answer.questionId,
+            correctAnswer: question.correctAnswer,
+            userAnswer: answer.answer,
+            isCorrect,
+          };
+        }),
       );
 
       const score = results.reduce((accumulator, currentValue) => {
-        return (
-          accumulator +
-          (currentValue.correctAnswer === currentValue.userAnswer ? 1 : 0)
-        );
+        return accumulator + (currentValue.isCorrect ? 1 : 0);
       }, 0);
 
       const averageScore = Math.round((score / exam.questions.length) * 100);
+
+      const allCorrect = results.every((result) => result.isCorrect);
 
       const examCompletion = new ExamCompletion({
         userId,
@@ -58,18 +75,14 @@ const examCompletionService = {
         completedDate: new Date(),
       });
 
-      const isCompleted =
-        await examCompletionService.checkExamIsCompletedByUser(userId, examId);
+      const isCompleted = await examCompletionService.checkExamIsCompletedByUser(userId, examId);
 
       await examCompletion.save();
 
-      if (!allAnswered) {
+      if (!allCorrect) {
         return new BaseSuccessResponse({
-          message: "You have not answered all questions.",
-          data: {
-            results,
-            score,
-          },
+          message: "Not all answers are correct",
+          data: { results, score: averageScore }
         });
       }
 
