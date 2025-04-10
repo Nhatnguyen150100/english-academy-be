@@ -18,7 +18,7 @@ authRouter.get(
   tokenMiddleware.verifyToken,
   authController.getUserInfo,
 );
-authRouter.get(
+authRouter.post(
   "/request-premium",
   tokenMiddleware.verifyToken,
   authController.requestToPremium,
