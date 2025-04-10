@@ -26,35 +26,38 @@ const examCompletionService = {
       }
 
       const results = await Promise.all(
-        listAnswer.map(async (answer) => {
-          const question = exam.questions.find(
-            (q) => q._id.toString() === answer.questionId,
+        exam.questions.map(async (_question) => {
+          const answer = listAnswer.find(
+            (q) => q.questionId.toString() === _question._id.toString(),
           );
 
-          if (!question) {
-            throw new BaseErrorResponse({
-              message: `Question ${answer.questionId} not found in exam`,
-            });
+          if (!answer) {
+            return {
+              questionId: _question._id.toString(),
+              correctAnswer: _question.correctAnswer,
+              userAnswer: _question.type === "MCQ" ? "" : [],
+              isCorrect: false,
+            };
           }
 
           let isCorrect = false;
 
-          if (question.type === "MCQ") {
-            isCorrect = answer.answer === question.correctAnswer.toString();
-          } else if (question.type === "ARRANGE") {
+          if (_question.type === "MCQ") {
+            isCorrect = answer.answer === _question.correctAnswer.toString();
+          } else if (_question.type === "ARRANGE") {
             const userAnswer = Array.isArray(answer.answer)
               ? answer.answer
               : [answer.answer];
 
             isCorrect =
               JSON.stringify(userAnswer) ===
-              JSON.stringify(question.correctAnswer);
+              JSON.stringify(_question.correctAnswer);
           }
 
           return {
             questionId: answer.questionId,
-            correctAnswer: question.correctAnswer,
-            userAnswer: answer.answer,
+            correctAnswer: _question.correctAnswer,
+            userAnswer: answer?.answer,
             isCorrect,
           };
         }),
@@ -75,14 +78,15 @@ const examCompletionService = {
         completedDate: new Date(),
       });
 
-      const isCompleted = await examCompletionService.checkExamIsCompletedByUser(userId, examId);
+      const isCompleted =
+        await examCompletionService.checkExamIsCompletedByUser(userId, examId);
 
       await examCompletion.save();
 
       if (!allCorrect) {
         return new BaseSuccessResponse({
           message: "Not all answers are correct",
-          data: { results, score: averageScore }
+          data: { results, score: averageScore },
         });
       }
 
