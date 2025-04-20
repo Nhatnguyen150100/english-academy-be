@@ -101,6 +101,52 @@ const authController = {
       res.status(error.status).json(error);
     }
   },
+  changePassword: async (req, res) => {
+    try {
+      const userId = req.user._id;
+      const { oldPassword, newPassword } = req.body;
+
+      if (!oldPassword || !newPassword) {
+        return res
+          .status(400)
+          .json({ message: "Old and new password are required" });
+      }
+
+      const rs = await authService.changePassword(
+        userId,
+        oldPassword,
+        newPassword,
+      );
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status || 500).json({ message: error.message });
+    }
+  },
+  forgotPassword: async (req, res) => {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      const rs = await authService.forgotPassword(email);
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status || 500).json({ message: error.message });
+    }
+  },
+  verifyOtpAndResetPassword: async (req, res) => {
+    try {
+      const { email, otp } = req.body;
+      const rs = await authService.verifyOtpAndResetPassword(email, otp);
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status || 500).json({ message: error.message });
+    }
+  },
 };
 
 export default authController;

@@ -10,16 +10,17 @@ import { join } from "path";
 const dotenv = require("dotenv");
 dotenv.config();
 
-import authRouter from "./routes/authRouter";
 import connectDB from "./config/database";
 import morgan from "morgan";
 import setUpRouters from "./routes/index.js";
+import { connectRedis } from "./config/redisClient.js";
 
 const logger = require("./config/winston.js");
 
 dotenv.config();
 
 connectDB();
+connectRedis();
 const app = express();
 
 app.use(

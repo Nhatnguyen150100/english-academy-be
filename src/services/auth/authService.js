@@ -6,9 +6,13 @@ import {
 } from "../../config/baseResponse.js";
 import generateRandomPassword from "../../utils/generate-password.js";
 import { User } from "../../models/user.js";
+import redisClient from "../../config/redisClient.js";
+import mailerServices from "../mailerServices.js";
+import mailConfig from "../../config/mail.config.js";
 
 const authService = {
   login: (email, password) => {
+    console.log("🚀 ~ password:", password)
     return new Promise(async (resolve, reject) => {
       try {
         const user = await User.findOne({ email });
@@ -105,6 +109,14 @@ const authService = {
   register: (email, password) => {
     return new Promise(async (resolve, reject) => {
       try {
+        const checkEmail = await User.findOne({ email });
+        if (checkEmail) {
+          return resolve(
+            new BaseErrorResponse({
+              message: "Account already exists. Please try again",
+            }),
+          );
+        }
         const user = new User({ email, password });
         await user.save();
         const rs = user.toObject();
@@ -313,6 +325,101 @@ const authService = {
       }
     });
   },
+  changePassword: (userId, oldPassword, newPassword) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const user = await User.findById(userId);
+        if (!user) {
+          return resolve(
+            new BaseErrorResponse({
+              message: "User not found",
+            }),
+          );
+        }
+
+        const isValid = await user.isValidPassword(oldPassword);
+        if (!isValid) {
+          return resolve(
+            new BaseErrorResponse({
+              message: "Old password is incorrect",
+            }),
+          );
+        }
+
+        user.password = newPassword;
+        await user.save();
+
+        return resolve(
+          new BaseSuccessResponse({
+            message: "Password changed successfully",
+          }),
+        );
+      } catch (error) {
+        logger.error(error.message);
+        reject(
+          new BaseErrorResponse({
+            message: error.message,
+          }),
+        );
+      }
+    });
+  },
+  forgotPassword: (email) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const user = await User.findOne({ email });
+        if (!user) {
+          return resolve(new BaseErrorResponse({ message: "Email not found" }));
+        }
+
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        await redisClient.set(`otp:${email}`, otp, "EX", 180);
+  
+        await mailerServices.sendMail(email, mailConfig.HTML_CONTENT_OTP(otp));
+
+        return resolve(
+          new BaseSuccessResponse({
+            message: "OTP sent to your email",
+          })
+        );
+      } catch (error) {
+        logger.error(error.message);
+        reject(new BaseErrorResponse({ message: error.message }));
+      }
+    });
+  },
+  verifyOtpAndResetPassword: (email, otp) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const storedOtp = await redisClient.get(`otp:${email}`);
+        if (!storedOtp || storedOtp !== otp) {
+          return resolve(
+            new BaseErrorResponse({ message: "Invalid or expired OTP" })
+          );
+        }
+  
+        const user = await User.findOne({ email });
+        if (!user) {
+          return resolve(new BaseErrorResponse({ message: "User not found" }));
+        }
+  
+        const newPassword = generateRandomPassword(10);
+        await User.findByIdAndUpdate(user._id, { password: newPassword });
+        await redisClient.del(`otp:${email}`);
+            
+        await mailerServices.sendMail(email, mailConfig.HTML_CONTENT_PASSWORD(newPassword));
+  
+        return resolve(
+          new BaseSuccessResponse({
+            message: "Password reset successfully. Check your email.",
+          })
+        );
+      } catch (error) {
+        logger.error(error.message);
+        reject(new BaseErrorResponse({ message: error.message }));
+      }
+    });
+  }
 };
 
 export default authService;

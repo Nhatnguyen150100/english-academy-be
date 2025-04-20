@@ -7,6 +7,9 @@ import passportController from "../controllers/auth/passportController.js";
 const authRouter = express.Router();
 
 authRouter.post("/login", authController.login);
+authRouter.post("/forgot-password", authController.forgotPassword);
+authRouter.post("/verify-otp", authController.verifyOtpAndResetPassword);
+authRouter.post("/change-password", tokenMiddleware.verifyToken, authController.changePassword);
 authRouter.get("/me", tokenMiddleware.verifyToken, authController.me);
 authRouter.get(
   "/list-user",
