@@ -10,7 +10,8 @@ const rankService = {
   getRankings: async (page = 1, limit = 10, name = "") => {
     try {
       const query = {
-        score: { $gt: 0 },
+        score: { $gt: -1 },
+        role: "USER",
         ...(name && {
           name: {
             $regex: name,
@@ -21,7 +22,7 @@ const rankService = {
 
       const rankings = await User.find(query)
         .sort({ score: -1 })
-        .select("name score accountType")
+        .select("name email score accountType")
         .lean()
         .skip((page - 1) * limit)
         .limit(limit);
@@ -32,6 +33,7 @@ const rankService = {
         ...rank,
         rankNumber: (page - 1) * limit + index + 1,
       }));
+      console.log("🚀 ~ listRanks ~ listRanks:", listRanks)
 
       return new BaseSuccessResponse({
         data: {
@@ -56,17 +58,6 @@ const rankService = {
       if (!user) {
         throw new BaseErrorResponse({
           message: "User not found.",
-        });
-      }
-
-      if (user.score <= 0) {
-        return new BaseSuccessResponse({
-          data: {
-            rank: null,
-            completedExams: 0,
-            totalExams: 0,
-            message: "User does not have a rank due to score being 0.",
-          },
         });
       }
 

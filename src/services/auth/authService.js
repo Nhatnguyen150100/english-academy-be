@@ -9,10 +9,10 @@ import { User } from "../../models/user.js";
 import redisClient from "../../config/redisClient.js";
 import mailerServices from "../mailerServices.js";
 import mailConfig from "../../config/mail.config.js";
+const { hash } = require("bcrypt");
 
 const authService = {
   login: (email, password) => {
-    console.log("🚀 ~ password:", password)
     return new Promise(async (resolve, reject) => {
       try {
         const user = await User.findOne({ email });
@@ -328,6 +328,20 @@ const authService = {
   changePassword: (userId, oldPassword, newPassword) => {
     return new Promise(async (resolve, reject) => {
       try {
+        if (!oldPassword || !newPassword) {
+          return resolve(
+            new BaseErrorResponse({
+              message: "Old and new password are required",
+            }),
+          );
+        }
+        if (oldPassword === newPassword) {
+          return resolve(
+            new BaseErrorResponse({
+              message: "New password must be different from old password",
+            }),
+          );
+        }
         const user = await User.findById(userId);
         if (!user) {
           return resolve(
@@ -379,7 +393,7 @@ const authService = {
 
         return resolve(
           new BaseSuccessResponse({
-            message: "OTP sent to your email",
+            message: "OTP was sent to your email. Please check your email.",
           })
         );
       } catch (error) {
@@ -404,7 +418,8 @@ const authService = {
         }
   
         const newPassword = generateRandomPassword(10);
-        await User.findByIdAndUpdate(user._id, { password: newPassword });
+        const hashPassword = await hash(newPassword, 10);
+        await User.findByIdAndUpdate(user._id, { password: hashPassword });
         await redisClient.del(`otp:${email}`);
             
         await mailerServices.sendMail(email, mailConfig.HTML_CONTENT_PASSWORD(newPassword));
