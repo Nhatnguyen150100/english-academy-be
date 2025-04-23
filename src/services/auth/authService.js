@@ -9,6 +9,8 @@ import { User } from "../../models/user.js";
 import redisClient from "../../config/redisClient.js";
 import mailerServices from "../mailerServices.js";
 import mailConfig from "../../config/mail.config.js";
+import { OAuth2Client } from "google-auth-library";
+import { CLIENT_ID, CLIENT_SECRET } from "../../config/google-keys.js";
 const { hash } = require("bcrypt");
 
 const authService = {
@@ -96,6 +98,28 @@ const authService = {
             message: "Login successfully",
           }),
         );
+      } catch (error) {
+        logger.error(error.message);
+        reject(
+          new BaseErrorResponse({
+            message: error.message,
+          }),
+        );
+      }
+    });
+  },
+  onCheckAccessTokenGoogle: (idToken) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const googleClient = new OAuth2Client(CLIENT_ID, CLIENT_SECRET);
+        const ticket = await googleClient.verifyIdToken({
+          idToken,
+          audience: CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        const { email, name } = payload;
+        const rs = await authService.loginByGoogle(email, name);
+        return resolve(rs);
       } catch (error) {
         logger.error(error.message);
         reject(
@@ -388,13 +412,13 @@ const authService = {
 
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         await redisClient.set(`otp:${email}`, otp, "EX", 180);
-  
+
         await mailerServices.sendMail(email, mailConfig.HTML_CONTENT_OTP(otp));
 
         return resolve(
           new BaseSuccessResponse({
             message: "OTP was sent to your email. Please check your email.",
-          })
+          }),
         );
       } catch (error) {
         logger.error(error.message);
@@ -408,33 +432,36 @@ const authService = {
         const storedOtp = await redisClient.get(`otp:${email}`);
         if (!storedOtp || storedOtp !== otp) {
           return resolve(
-            new BaseErrorResponse({ message: "Invalid or expired OTP" })
+            new BaseErrorResponse({ message: "Invalid or expired OTP" }),
           );
         }
-  
+
         const user = await User.findOne({ email });
         if (!user) {
           return resolve(new BaseErrorResponse({ message: "User not found" }));
         }
-  
+
         const newPassword = generateRandomPassword(10);
         const hashPassword = await hash(newPassword, 10);
         await User.findByIdAndUpdate(user._id, { password: hashPassword });
         await redisClient.del(`otp:${email}`);
-            
-        await mailerServices.sendMail(email, mailConfig.HTML_CONTENT_PASSWORD(newPassword));
-  
+
+        await mailerServices.sendMail(
+          email,
+          mailConfig.HTML_CONTENT_PASSWORD(newPassword),
+        );
+
         return resolve(
           new BaseSuccessResponse({
             message: "Password reset successfully. Check your email.",
-          })
+          }),
         );
       } catch (error) {
         logger.error(error.message);
         reject(new BaseErrorResponse({ message: error.message }));
       }
     });
-  }
+  },
 };
 
 export default authService;

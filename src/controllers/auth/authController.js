@@ -22,6 +22,24 @@ const authController = {
       res.status(error.status).json(error);
     }
   },
+  loginByGoogle: async (req, res) => {
+    try {
+      const { idToken } = req.body;
+      const rs = await authService.onCheckAccessTokenGoogle(idToken);
+      if (!rs.data) {
+        return res.status(rs.status).json({ message: rs.message });
+      }
+      const accessToken = tokenService.generateToken(rs.data);
+      res.status(rs.status).json({
+        message: rs.message,
+        data: { user: rs.data, accessToken: accessToken },
+        status: rs.status,
+      });
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status).json(error);
+    }
+  },
   requestToPremium: async (req, res) => {
     try {
       const user = req.user;

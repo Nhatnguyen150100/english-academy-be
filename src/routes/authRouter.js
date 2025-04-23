@@ -9,7 +9,11 @@ const authRouter = express.Router();
 authRouter.post("/login", authController.login);
 authRouter.post("/forgot-password", authController.forgotPassword);
 authRouter.post("/verify-otp", authController.verifyOtpAndResetPassword);
-authRouter.post("/change-password", tokenMiddleware.verifyToken, authController.changePassword);
+authRouter.post(
+  "/change-password",
+  tokenMiddleware.verifyToken,
+  authController.changePassword,
+);
 authRouter.get("/me", tokenMiddleware.verifyToken, authController.me);
 authRouter.get(
   "/list-user",
@@ -37,6 +41,7 @@ authRouter.put(
   authController.updateAccountType,
 );
 authRouter.get("/google", passportController.authenticateByGoogle);
+authRouter.get("/login-by-google", authController.loginByGoogle);
 authRouter.get("/google/callback", passportController.authenticateCallback);
 authRouter.post(
   "/register",
