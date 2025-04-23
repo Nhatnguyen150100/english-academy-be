@@ -85,7 +85,7 @@ const authService = {
           return resolve(
             new BaseSuccessResponse({
               data: rs,
-              message: "Đăng nhập thành công",
+              message: "Login successfully",
             }),
           );
         }
@@ -93,7 +93,7 @@ const authService = {
         return resolve(
           new BaseSuccessResponse({
             data: user._doc,
-            message: "Đăng nhập thành công",
+            message: "Login successfully",
           }),
         );
       } catch (error) {

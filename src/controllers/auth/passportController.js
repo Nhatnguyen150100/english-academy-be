@@ -47,7 +47,7 @@ const passportController = {
     passport.authenticate(
       "google",
       {
-        failureRedirect: `${process.env.BASE_URL_CLIENT}/login?status=error&message=login_with_google_failed`,
+        failureRedirect: `${process.env.BASE_URL_APP}/login?status=error&message=login_with_google_failed`,
       },
       async () => {
         const email = req.userProfile.email;
@@ -56,7 +56,7 @@ const passportController = {
         const accessToken = tokenService.generateToken(rs.data);
         const params = createUrlParams(onRemoveParams(rs.data));
         res.redirect(
-          `${process.env.BASE_URL_CLIENT}/login-google?status=success&${params}&accessToken=${accessToken}`,
+          `${process.env.BASE_URL_APP}/login-google?status=success&${params}&accessToken=${accessToken}`,
         );
       },
     )(req, res, next);
