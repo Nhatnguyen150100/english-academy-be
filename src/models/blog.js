@@ -23,11 +23,34 @@ const blogSchema = new Schema(
       type: String,
       required: true,
     },
+    comments: [
+      {
+        userId: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        commentText: {
+          type: String,
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+    likes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     statusBlog: {
       type: String,
       enum: ["PENDING_APPROVED", "APPROVED", "REJECTED"],
       default: "PENDING_APPROVED",
-    }
+    },
   },
   { timestamps: true },
 );

@@ -108,6 +108,36 @@ const blogController = {
       res.status(error.status).json(error);
     }
   },
+
+  likeBlog: async (req, res) => {
+    try {
+      const blogId = req.params.id;
+      const userId = req.user._id;
+      const rs = await blogService.likeBlog(blogId, userId);
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status || 500).json(error);
+    }
+  },
+
+  commentBlog: async (req, res) => {
+    try {
+      const blogId = req.params.id;
+      const userId = req.user._id;
+      const { commentText } = req.body;
+
+      if (!commentText || typeof commentText !== "string") {
+        return res.status(400).json({ message: "Invalid comment text" });
+      }
+
+      const rs = await blogService.commentBlog(blogId, userId, commentText);
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status || 500).json(error);
+    }
+  },
 };
 
 export default blogController;

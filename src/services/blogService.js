@@ -120,7 +120,10 @@ const blogService = {
 
   getBlogDetail: async (id) => {
     try {
-      const blog = await Blog.findById(id).populate("userId");
+      const blog = await Blog.findById(id).populate("userId").populate({
+        path: "comments.userId",
+        model: "User",
+      });
       if (!blog) {
         return new BaseErrorResponse({
           message: "Blog not found",
@@ -219,6 +222,61 @@ const blogService = {
       throw new BaseErrorResponse({
         message: error.message,
       });
+    }
+  },
+
+  likeBlog: async (blogId, userId) => {
+    try {
+      const blog = await Blog.findById(blogId);
+      if (!blog) {
+        return new BaseErrorResponse({ message: "Blog not found" });
+      }
+
+      const index = blog.likes.indexOf(userId);
+      if (index !== -1) {
+        blog.likes.splice(index, 1);
+        await blog.save();
+        return new BaseSuccessResponse({
+          data: blog,
+          message: "Unliked blog successfully",
+        });
+      }
+
+      blog.likes.push(userId);
+      await blog.save();
+      return new BaseSuccessResponse({
+        data: blog,
+        message: "Liked blog successfully",
+      });
+    } catch (error) {
+      logger.error(error.message);
+      throw new BaseErrorResponse({ message: error.message });
+    }
+  },
+
+  commentBlog: async (blogId, userId, commentText) => {
+    try {
+      const blog = await Blog.findById(blogId);
+      if (!blog) {
+        return new BaseErrorResponse({ message: "Blog not found" });
+      }
+
+      const comment = {
+        userId,
+        commentText,
+        createdAt: new Date(),
+      };
+
+      blog.comments.push(comment);
+      await blog.save();
+
+      return new BaseSuccessResponse({
+        data: blog,
+        message: "Comment added successfully",
+      });
+    } catch (error) {
+      logger.error(error.message);
+      throw new BaseErrorResponse({ message: error.message });
     }
   },
 };
