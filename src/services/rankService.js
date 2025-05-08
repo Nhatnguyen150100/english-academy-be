@@ -33,7 +33,6 @@ const rankService = {
         ...rank,
         rankNumber: (page - 1) * limit + index + 1,
       }));
-      console.log("🚀 ~ listRanks ~ listRanks:", listRanks)
 
       return new BaseSuccessResponse({
         data: {

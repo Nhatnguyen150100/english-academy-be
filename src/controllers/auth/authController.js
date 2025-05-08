@@ -43,7 +43,7 @@ const authController = {
   requestToPremium: async (req, res) => {
     try {
       const user = req.user;
-      const rs = await authService.requestToPremium(user._id);
+      const rs = await authService.requestToPremium(user._id, req.body.plan);
       res.status(rs.status).json(rs);
     } catch (error) {
       logger.error(error.message);

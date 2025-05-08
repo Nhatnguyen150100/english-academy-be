@@ -2,6 +2,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const cron = require("node-cron");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const bodyParser = require("body-parser");
@@ -32,13 +33,13 @@ app.use(
     optionsSuccessStatus: 200,
     allowedHeaders: ["Content-Type", "Authorization", "token"],
     exposedHeaders: ["X-Total-Count", "token"],
-  })
+  }),
 );
 
 app.use(
   helmet({
     crossOriginResourcePolicy: false,
-  })
+  }),
 );
 app.use(bodyParser.json({ limit: "50mb" }));
 const limiter = rateLimit({
@@ -57,6 +58,11 @@ app.use(express.static(join(__dirname, "..", "public")));
 app.use((req, res, next) => {
   res.set("Cache-Control", "no-store");
   next();
+});
+
+cron.schedule("0 0 * * *", async () => {
+  console.log("🔍 Running daily job to downgrade expired PREMIUM users...");
+  await downgradeExpiredPremiumUsers();
 });
 
 /**

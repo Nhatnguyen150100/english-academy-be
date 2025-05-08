@@ -9,6 +9,7 @@ import examCompletionRouter from "./examCompletionRouter";
 import examRouter from "./examRouter";
 import imagesRouter from "./imagesRouter";
 import missionDailyRouter from "./missionDailyRouter";
+import paymentRouter from "./paymentRouter";
 import rankRouter from "./rankRouter";
 
 const prefixURL = "/v1";
@@ -28,6 +29,7 @@ const setUpRouters = (app) => {
   app.use(buildUrl("/blogs"), blogRouter);
   app.use(buildUrl("/chapter"), chapterRouter);
   app.use(buildUrl("/chat"), chatbotRouter);
+  app.use(buildUrl("/payment"), paymentRouter);
 };
 
 export default setUpRouters;

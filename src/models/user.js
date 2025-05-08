@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-const { hash, compare } = require("bcrypt");
+const { hash, compare } = require("bcryptjs");
 const logger = require("../config/winston");
 
 const userSchema = new Schema(
@@ -30,6 +30,9 @@ const userSchema = new Schema(
       default: 0,
       required: true,
     },
+    premiumExpiresAt: {
+      type: Date,
+    },
     accountType: {
       type: String,
       enum: ["FREE", "PREMIUM"],
@@ -56,6 +59,10 @@ userSchema.pre("save", async function (next) {
 
 userSchema.methods.isValidPassword = async function (password) {
   return await compare(password, this.password);
+};
+
+userSchema.methods.isPremiumActive = function () {
+  return this.accountType === "PREMIUM" && this.premiumExpiresAt > new Date();
 };
 
 const deleteMany = async () => {

@@ -11,7 +11,9 @@ import mailerServices from "../mailerServices.js";
 import mailConfig from "../../config/mail.config.js";
 import { OAuth2Client } from "google-auth-library";
 import { CLIENT_ID, CLIENT_SECRET } from "../../config/google-keys.js";
-const { hash } = require("bcrypt");
+import paymentService from "../paymentService.js";
+import DEFINE_PLAN from "../../constants/plan.js";
+const { hash } = require("bcryptjs");
 
 const authService = {
   login: (email, password) => {
@@ -51,19 +53,19 @@ const authService = {
       }
     });
   },
-  requestToPremium: (userId) => {
+  requestToPremium: (userId, plan) => {
     return new Promise(async (resolve, reject) => {
       try {
         const user = await User.findByIdAndUpdate(userId, {
           isRequestChangeToPremium: true,
         });
-        return resolve(
-          new BaseSuccessResponse({
-            data: user,
-            message:
-              "Request to change Premium account success. Wait for ADMIN contact you!",
-          }),
+        const rs = await paymentService.createPayment(
+          user,
+          plan === "MONTHLY"
+            ? DEFINE_PLAN.MONTHLY.price
+            : DEFINE_PLAN.YEARLY.price,
         );
+        return resolve(rs);
       } catch (error) {
         logger.error(error.message);
         reject(
