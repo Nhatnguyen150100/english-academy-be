@@ -1,5 +1,8 @@
 "use strict";
-import * as queryString from "qs";
+import * as dotenv from "dotenv";
+
+dotenv.config();
+import queryString from "qs";
 import { BaseErrorResponse, BaseSuccessResponse } from "../config/baseResponse";
 import logger from "../config/winston";
 import bcryptjs from "bcryptjs";
