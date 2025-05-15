@@ -13,6 +13,8 @@ import { OAuth2Client } from "google-auth-library";
 import { CLIENT_ID, CLIENT_SECRET } from "../../config/google-keys.js";
 import paymentService from "../paymentService.js";
 import DEFINE_PLAN from "../../constants/plan.js";
+import { Statistics } from "../../models/statistic.js";
+import dayjs from "dayjs";
 const { hash } = require("bcryptjs");
 
 const authService = {
@@ -312,6 +314,89 @@ const authService = {
       } catch (error) {
         logger.error(error.message);
         reject(
+          new BaseErrorResponse({
+            message: error.message,
+          }),
+        );
+      }
+    });
+  },
+  statistic: (type = "daily") => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let data = [];
+        let message = "";
+        let totalAmount = 0;
+
+        if (type === "daily") {
+          const start = dayjs().startOf("month").format("YYYY-MM-DD");
+          const end = dayjs().endOf("month").format("YYYY-MM-DD");
+
+          const stats = await Statistics.find({
+            date: { $gte: start, $lte: end },
+          }).sort({ date: 1 });
+
+          data = stats.map((s) => ({
+            date: s.date,
+            totalAmount: s.totalAmount,
+          }));
+          message = "Thống kê doanh thu theo ngày trong tháng hiện tại";
+        } else if (type === "monthly") {
+          const currentYear = dayjs().year();
+          const regex = new RegExp(`^${currentYear}-\\d{2}-\\d{2}$`);
+          const stats = await Statistics.find({ date: { $regex: regex } });
+
+          const monthMap = {};
+
+          stats.forEach((stat) => {
+            const month = dayjs(stat.date).format("YYYY-MM");
+            if (!monthMap[month]) monthMap[month] = 0;
+            monthMap[month] += stat.totalAmount;
+          });
+
+          data = Object.keys(monthMap)
+            .map((month) => ({
+              date: month,
+              totalAmount: monthMap[month],
+            }))
+            .sort((a, b) => a.date.localeCompare(b.date));
+
+          message = "Thống kê doanh thu theo tháng trong năm hiện tại";
+        } else if (type === "yearly") {
+          const stats = await Statistics.find();
+          const yearMap = {};
+
+          stats.forEach((stat) => {
+            const year = dayjs(stat.date).format("YYYY");
+            if (!yearMap[year]) yearMap[year] = 0;
+            yearMap[year] += stat.totalAmount;
+          });
+
+          data = Object.keys(yearMap)
+            .map((year) => ({
+              date: year,
+              totalAmount: yearMap[year],
+            }))
+            .sort((a, b) => a.date.localeCompare(b.date));
+
+          message = "Thống kê doanh thu theo từng năm";
+        }
+
+        totalAmount = data.reduce((sum, item) => sum + item.totalAmount, 0);
+
+        return resolve(
+          new BaseSuccessResponse({
+            data: {
+              type,
+              totalAmount,
+              stats: data,
+            },
+            message,
+          }),
+        );
+      } catch (error) {
+        logger.error(error.message);
+        return reject(
           new BaseErrorResponse({
             message: error.message,
           }),

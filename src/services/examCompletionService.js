@@ -149,6 +149,20 @@ const examCompletionService = {
       });
     }
   },
+  checkExamIsAttemptByUser: async (userId, examId) => {
+    try {
+      const examCompletion = await ExamCompletion.findOne({
+        userId,
+        examId,
+      });
+      return !!examCompletion;
+    } catch (error) {
+      logger.error(error.message);
+      throw new BaseErrorResponse({
+        message: error.message,
+      });
+    }
+  },
   canAttemptExam: async (userId) => {
     try {
       const user = await User.findById(userId);

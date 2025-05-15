@@ -147,9 +147,11 @@ const examService = {
 
       const isCompleted =
         await examCompletionService.checkExamIsCompletedByUser(userId, id);
+      const isAttempted =
+        await examCompletionService.checkExamIsAttemptByUser(userId, id);
 
       return new BaseSuccessResponse({
-        data: { ...examObject, isCompleted },
+        data: { ...examObject, isCompleted, isAttempted },
         message,
       });
     } catch (error) {

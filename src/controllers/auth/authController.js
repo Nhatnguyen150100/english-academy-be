@@ -88,6 +88,16 @@ const authController = {
       res.status(error.status).json(error);
     }
   },
+  statistic: async (req, res) => {
+    try {
+      const { type = "monthly" } = req.query;
+      const rs = await authService.statistic(type);
+      res.status(rs.status).json(rs);
+    } catch (error) {
+      logger.error(error.message);
+      res.status(error.status).json(error);
+    }
+  },
   updateAccountType: async (req, res) => {
     try {
       const { id } = req.params;

@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import generateSignature from "../utils/generate-signature";
 import { User } from "../models/user";
 import DEFINE_PLAN from "../constants/plan";
+import { Statistics } from "../models/statistic";
 
 function sortObject(obj) {
   const sorted = {};
@@ -89,6 +90,7 @@ const paymentService = {
             }),
           );
         }
+
         const validHashKey = bcryptjs.compare(
           secretToken,
           process.env.VN_PAY_HASH_KEY,
@@ -100,12 +102,14 @@ const paymentService = {
             }),
           );
         }
+
         const isMonthlyPlan = DEFINE_PLAN.MONTHLY.price === amount;
         const durationInDays = isMonthlyPlan ? 30 : 365;
 
         const premiumExpiresAt = new Date(
           Date.now() + durationInDays * 24 * 60 * 60 * 1000,
         );
+
         const userUpdated = await User.findByIdAndUpdate(
           userId,
           {
@@ -115,13 +119,32 @@ const paymentService = {
           { new: true },
         );
 
+        const today = dayjs().format('YYYY-MM-DD');
+
+        let stat = await Statistics.findOne({ date: today });
+
+        if (!stat) {
+          stat = new Statistics({ date: today, totalAmount: amount });
+        } else {
+          stat.totalAmount += amount;
+        }
+
+        await stat.save();
+
         return resolve(
           new BaseSuccessResponse({
             data: userUpdated,
             message: "updated success",
           }),
         );
-      } catch (error) {}
+      } catch (error) {
+        console.error("Lỗi updatePlan:", error);
+        return reject(
+          new BaseErrorResponse({
+            message: "Đã xảy ra lỗi khi cập nhật gói",
+          }),
+        );
+      }
     });
   },
 };

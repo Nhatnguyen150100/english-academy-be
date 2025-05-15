@@ -3,6 +3,7 @@ const seedBlogs = require("./blog_seeders");
 const seedChapters = require("./chapter_seeders");
 const seedCourses = require("./course_seeders");
 const seedExams = require("./exam_seeders");
+const seedStatistics = require("./statistic_seeders");
 const seedUsers = require("./user_seeders");
 
 const runSeeders = async () => {
@@ -12,6 +13,7 @@ const runSeeders = async () => {
   await seedChapters();
   await seedExams();
   await seedBlogs();
+  await seedStatistics();
   logger.info("Seeders succeeded");
 };
 

@@ -21,6 +21,11 @@ authRouter.get(
   authController.listUser,
 );
 authRouter.get(
+  "/statistic",
+  tokenMiddleware.verifyTokenAdmin,
+  authController.statistic,
+);
+authRouter.get(
   "/user-info/:id",
   tokenMiddleware.verifyToken,
   authController.getUserInfo,
